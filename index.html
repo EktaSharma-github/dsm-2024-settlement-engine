@@ -101,7 +101,12 @@ svg text{fill:var(--muted);font:11px var(--f-mono)}
 .timeline .d{font:600 .8rem var(--f-mono);color:var(--accent)}
 .timeline .w{font-weight:600;font-size:.9rem}
 .timeline .x{font-size:.8rem;color:var(--muted)}
-pre.mermaid{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;overflow-x:auto;margin:0}
+.flow svg{min-width:760px;width:100%;height:auto;display:block;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.fc-in{fill:var(--sunk);stroke:var(--line)} .fc-pr{fill:var(--surface);stroke:var(--accent);stroke-width:1.5}
+.fc-out{fill:var(--surface);stroke:var(--line)} .fc-dec{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+.fc-e{fill:none;stroke:var(--muted);stroke-width:1.4} .fc-head{fill:var(--muted)}
+svg text.fc-t{fill:var(--ink);font:500 13px var(--f-body)} svg text.fc-ref{fill:var(--accent);font:500 11px var(--f-mono)}
+svg text.fc-l{fill:var(--muted);font:italic 11px var(--f-body)}
 footer{padding-block:32px 48px;border-top:1px solid var(--line);color:var(--muted);font-size:.85rem;display:grid;gap:6px}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style>
@@ -158,21 +163,9 @@ footer{padding-block:32px 48px;border-top:1px solid var(--line);color:var(--mute
     <div><span class="d">Issue + 10 days</span><span class="w">Payment due</span><span class="x">After that, 0.04% per day late payment surcharge</span></div>
     <div><span class="d">Default</span><span class="w">LC encashed</span><span class="x">Entity recoups the LC within 3 days; next FY it must open an LC for 110% of average weekly liability</span></div>
   </div>
-<pre class="mermaid">
-flowchart LR
-  A[Schedules from LDC] --> C{Engine: compute deviation per block}
-  B[SEM meter data] --> C
-  P[Power exchange ACPs: IDAM, RTM, HP-DAM] --> N[Normal Rate NR, Reg 7]
-  K[Contract and reference rates] --> C
-  N --> C
-  C --> D[Classify entity and slab]
-  D --> E[Apply frequency and volume rules, Reg 8]
-  E --> F[Block-wise charge ledger]
-  F --> G{Compare with RPC statement}
-  G -- match --> H[Approve payment before day 10]
-  G -- variance --> I[Raise discrepancy to RPC]
-  H --> J[Pool account, Reg 9]
-</pre>
+<div class="scroll flow"><svg viewBox="0 0 1040 390" role="img" aria-label="Settlement flow: schedules and meter data give the deviation per block; exchange prices give the normal rate; both, with contract rates, are priced under Reg 8 into a block-wise ledger, which is checked against the RPC statement. A match leads to payment within 10 days and the pool account; a variance is raised with the RPC.">
+<defs><marker id="fcArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="fc-head"/></marker></defs>
+<path d="M200,43 H225 V72 H246" class="fc-e" marker-end="url(#fcArrow)"/><path d="M200,109 H225 V90 H246" class="fc-e" marker-end="url(#fcArrow)"/><path d="M200,183 H246" class="fc-e" marker-end="url(#fcArrow)"/><path d="M430,81 H455 V146 H476" class="fc-e" marker-end="url(#fcArrow)"/><path d="M430,183 H455 V174 H476" class="fc-e" marker-end="url(#fcArrow)"/><path d="M200,257 H465 V192 H476" class="fc-e" marker-end="url(#fcArrow)"/><path d="M680,160 H716" class="fc-e" marker-end="url(#fcArrow)"/><path d="M860,160 H896" class="fc-e" marker-end="url(#fcArrow)"/><path d="M960,112 V70" class="fc-e" marker-end="url(#fcArrow)"/><path d="M960,208 V248" class="fc-e" marker-end="url(#fcArrow)"/><path d="M960,302 V326" class="fc-e" marker-end="url(#fcArrow)"/><rect x="10" y="20" width="190" height="46" rx="6" class="fc-in"/><text x="105.0" y="47.5" text-anchor="middle" class="fc-t">Schedules from LDC</text><rect x="10" y="86" width="190" height="46" rx="6" class="fc-in"/><text x="105.0" y="113.5" text-anchor="middle" class="fc-t">SEM meter data</text><rect x="10" y="160" width="190" height="46" rx="6" class="fc-in"/><text x="105.0" y="179.5" text-anchor="middle" class="fc-t">Exchange ACPs</text><text x="105.0" y="195.5" text-anchor="middle" class="fc-t">IDAM · RTM · HP-DAM</text><rect x="10" y="234" width="190" height="46" rx="6" class="fc-in"/><text x="105.0" y="261.5" text-anchor="middle" class="fc-t">Contract &amp; reference rates</text><rect x="250" y="53" width="180" height="56" rx="6" class="fc-pr"/><text x="340.0" y="77.5" text-anchor="middle" class="fc-t">Deviation per block</text><text x="340.0" y="93.5" text-anchor="middle" class="fc-t fc-ref">Reg 6</text><rect x="250" y="160" width="180" height="46" rx="6" class="fc-pr"/><text x="340.0" y="179.5" text-anchor="middle" class="fc-t">Normal Rate (NR)</text><text x="340.0" y="195.5" text-anchor="middle" class="fc-t fc-ref">Reg 7</text><rect x="480" y="116" width="200" height="88" rx="6" class="fc-pr"/><text x="580.0" y="140.5" text-anchor="middle" class="fc-t">Classify entity &amp; slab</text><text x="580.0" y="156.5" text-anchor="middle" class="fc-t">Apply frequency and</text><text x="580.0" y="172.5" text-anchor="middle" class="fc-t">volume rules</text><text x="580.0" y="188.5" text-anchor="middle" class="fc-t fc-ref">Reg 8</text><rect x="720" y="130" width="140" height="60" rx="6" class="fc-pr"/><text x="790.0" y="156.5" text-anchor="middle" class="fc-t">Block-wise</text><text x="790.0" y="172.5" text-anchor="middle" class="fc-t">charge ledger</text><polygon points="900,160 960,112 1020,160 960,208" class="fc-dec"/><text x="960" y="156" text-anchor="middle" class="fc-t">Matches RPC</text><text x="960" y="172" text-anchor="middle" class="fc-t">statement?</text><rect x="895" y="14" width="130" height="52" rx="6" class="fc-out"/><text x="960.0" y="36.5" text-anchor="middle" class="fc-t">Raise discrepancy</text><text x="960.0" y="52.5" text-anchor="middle" class="fc-t">with RPC</text><rect x="895" y="252" width="130" height="50" rx="6" class="fc-out"/><text x="960.0" y="273.5" text-anchor="middle" class="fc-t">Approve payment</text><text x="960.0" y="289.5" text-anchor="middle" class="fc-t">within 10 days</text><rect x="895" y="330" width="130" height="48" rx="6" class="fc-out"/><text x="960.0" y="350.5" text-anchor="middle" class="fc-t">Pool account</text><text x="960.0" y="366.5" text-anchor="middle" class="fc-t fc-ref">Reg 9</text><text x="968" y="95" class="fc-l">variance</text><text x="968" y="232" class="fc-l">match</text></svg></div>
 </section>
 
 <section id="rules">
@@ -748,12 +741,5 @@ $('simCsv').value = sampleCSV();
 syncCalcUI(false); renderNR(); renderLPS(); runSim();
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
-<script>
-if (window.mermaid) {
-  const dark = matchMedia('(prefers-color-scheme: dark)').matches;
-  mermaid.initialize({ startOnLoad: true, theme: dark ? 'dark' : 'neutral', securityLevel: 'strict' });
-}
-</script>
 </body>
 </html>
