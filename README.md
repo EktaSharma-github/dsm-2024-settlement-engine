@@ -78,6 +78,14 @@ The charts are drawn by the same functions that price the calculator, so the pic
 
 ![Volume slabs](docs/images/rules-slabs.png)
 
+**Both rules at once.** A heatmap of frequency against size of deviation. Each cell is the average rate on the whole deviation, so the slab limit shows as a cliff and the frequency rules as a staircase. A toggle switches between a general seller's shortfall and a buyer's over-drawal.
+
+![Cost heatmap](docs/images/rules-heatmap.png)
+
+**The penalty curve.** What a forecast error really costs, measured against a perfect forecast. Under the WS table the loss is symmetric: nothing in VL1, 10% of the energy's value in VL2, its full value beyond. Under parity it depends on frequency: at 50.00 Hz only surplus is penalised, while at 49.85 Hz a shortfall is the expensive side.
+
+![Penalty curve](docs/images/rules-penalty-curve.png)
+
 The section also covers:
 - how the 01-04-2026 denominator change raises the cost of one example block from ₹6,250 to ₹7,750
 - buyer volume limits by category
@@ -95,6 +103,10 @@ The section also covers:
 
 ![Calculator](docs/images/calculator.png)
 
+Each result comes with a plain-English walkthrough: deviation, slab split, frequency position, rate per slab, and total.
+
+![Calculator walkthrough](docs/images/calculator-walkthrough.png)
+
 **Day simulator.** Prices 96 blocks and turns the result into product insights. On the sample day, 10% of blocks carry most of the cost, which argues for spending forecasting effort on volatile periods.
 
 ![Day simulator](docs/images/day-simulator.png)
@@ -109,6 +121,12 @@ To run the suite from the command line:
 
 ```bash
 node tests/engine.test.js
+```
+
+A second suite checks the chart data: 35 rate points read directly from the regulation's frequency tables, compared with the functions that draw the charts.
+
+```bash
+node tests/rates.test.js
 ```
 
 ## Selected findings from the clarification log
@@ -144,7 +162,7 @@ All 18 are in the live page.
 - **Gap analysis:** finding contradictions, undefined terms and edge cases before development, with recommended assumptions
 - **Process modelling:** an as-is weekly settlement cycle and a to-be audit flow
 - **Test design:** an independent test oracle and boundary cases (frequency band edges, slab limits, regime change)
-- **Data visualisation:** turning rate tables into charts that stakeholders can read
+- **Data visualisation:** turning rate tables into charts, a cost heatmap and a penalty curve that stakeholders can read, each checked against hand calculations
 - **Prototyping:** a working engine that proves the spec is complete and unambiguous
 
 ## Repository structure
@@ -152,7 +170,8 @@ All 18 are in the live page.
 ```
 index.html            Live case study and prototype (engine inlined, no dependencies)
 src/engine.js         Settlement engine: pure functions, runs in Node and the browser
-tests/engine.test.js  Hand-calculated regression suite
+tests/engine.test.js  Hand-calculated regression suite (23 cases)
+tests/rates.test.js   Chart data audit against the regulation tables (35 points)
 docs/                 Source regulation, First/Second/Third Amendments, README screenshots
 ```
 

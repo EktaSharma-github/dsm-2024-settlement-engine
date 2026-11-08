@@ -140,8 +140,8 @@ details.tableview table{margin-top:10px}
 @media (max-width:520px){.srow{grid-template-columns:1fr;gap:4px}}
 .slabel{font-size:.82rem;line-height:1.3}
 .slabel small{display:block;color:var(--muted);font:400 .72rem var(--f-mono)}
-.strack{position:relative;display:flex;gap:2px;height:30px}
-.seg{display:flex;align-items:center;justify-content:center;font:600 .72rem var(--f-mono);border-radius:2px;min-width:0;overflow:hidden;white-space:nowrap}
+.strack{position:relative;display:block;height:30px}
+.seg{position:absolute;top:0;bottom:0;display:flex;align-items:center;justify-content:center;font:600 .72rem var(--f-mono);border-radius:2px;min-width:0;overflow:hidden;white-space:nowrap}
 .seg:first-child{border-radius:4px 2px 2px 4px}.seg:last-child{border-radius:2px 4px 4px 2px}
 .seg.q0{background:transparent;border:1px dashed var(--line);color:var(--muted)}
 .seg.q1{background:var(--q1);color:var(--q-lo)}.seg.q2{background:var(--q2);color:var(--q-lo)}.seg.q3{background:var(--q3);color:var(--q-lo)}
@@ -197,6 +197,21 @@ table.matrix th{text-transform:none;letter-spacing:0;font-size:.78rem}
 .field.check input{width:auto}
 #oNotes{margin:0;padding-left:1.1em;display:grid;gap:4px;font-size:.84rem}
 #oNotes:empty{display:none}
+
+
+/* ---- heatmap, walkthrough ---- */
+.seg-ctl{display:flex;flex-wrap:wrap;gap:6px}
+.seg-ctl button{background:transparent;color:var(--accent);border:1px solid var(--line);font-weight:500}
+.seg-ctl button.on{background:var(--accent-soft);border-color:var(--accent);color:var(--ink)}
+#vHeat svg{min-width:520px}
+#vPenalty svg{min-width:560px}
+.hm-legend{display:flex;align-items:center;gap:10px;font:500 .74rem var(--f-mono);color:var(--muted)}
+.hm-legend{flex-wrap:wrap}
+.hm-key{display:inline-flex;align-items:center;gap:5px}
+.hm-key i{width:14px;height:12px;border-radius:2px;display:inline-block;border:1px solid var(--line)}
+details.walk summary{cursor:pointer;color:var(--accent);font-weight:500;font-size:.88rem}
+ol.steps{margin:8px 0 0;padding-left:1.3em;display:grid;gap:6px;font-size:.88rem}
+ol.steps li::marker{font:600 .8rem var(--f-mono);color:var(--accent)}
 
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style>
@@ -304,7 +319,7 @@ table.matrix th{text-transform:none;letter-spacing:0;font-size:.78rem}
       <p id="pOut"></p>
     </div>
     <div class="panel"><h3>What parity does to the same shortfall</h3>
-      <p class="hint">A solar plant, 100 MW available, scheduled at 60 MW, generating 50 MW. The line shows the average rate on the 10 MW shortfall as a % of contract rate, under each table.</p>
+      <p class="hint">A solar plant, 100 MW available, scheduled at 60 MW, generating 50 MW. The line shows the average rate on the 10 MW shortfall as a % of contract rate, under each table. The parity line uses working assumption G-13: limit min(10% of schedule, 100 MW), priced at contract rate.</p>
       <div class="fchart" id="vParity"></div>
     </div>
   </div>
@@ -352,12 +367,18 @@ table.matrix th{text-transform:none;letter-spacing:0;font-size:.78rem}
     <div class="panel"><h3>Over-injection <span class="hint">seller receives, % of RR</span></h3><div class="fchart" id="vGsOver"></div></div>
     <div class="panel"><h3>Under-injection <span class="hint">seller pays, % of RR</span></h3><div class="fchart" id="vGsUnder"></div></div>
   </div>
-  <p class="hint">Read it like this: a generator that falls short at 49.92 Hz, when the grid needs power most, pays up to 150% of RR inside the limit and 200% beyond it. Extra power at 50.10 Hz or above is worse than worthless: the seller pays 10% of RR for it.</p>
+  <p class="hint">Read it like this: a generator that falls short at 49.92 Hz, when the grid needs power, pays 135.75% of RR inside the limit and 150% beyond it. Below 49.90 Hz that rises to 150% and 200%. Extra power at 50.10 Hz or above is worse than worthless: the seller pays 10% of RR for it.</p>
 
   <div class="sub-head"><h3>Buyer: rate against frequency, by volume slab</h3><p class="hint">VL1, VL2 and VL3 are the volume slabs. Their MW sizes depend on the buyer category (chart further down).</p></div>
   <div class="grid2">
     <div class="panel"><h3>Under-drawal <span class="hint">buyer receives, % of NR</span></h3><div class="fchart" id="vByUnder"></div></div>
     <div class="panel"><h3>Over-drawal <span class="hint">buyer pays, % of NR</span></h3><div class="fchart" id="vByOver"></div></div>
+  </div>
+  <div class="panel"><h3>Both rules at once: volume and frequency together <span class="tag">Reg 8(1), 8(7)</span></h3>
+    <p class="hint">Each cell is the average rate on the whole deviation, combining the volume slabs and the frequency rule. Darker cells cost more. Hover or tap a cell for the numbers. The dashed lines are the slab limits; the outlined columns are the frequency band.</p>
+    <div class="seg-ctl" role="group" aria-label="Choose entity"><button type="button" class="on" data-hm="gs" aria-pressed="true">General seller under-injecting (schedule 500 MW)</button><button type="button" data-hm="buyer" aria-pressed="false">Regular buyer over-drawing (schedule 1,500 MW)</button></div>
+    <div class="fchart" id="vHeat"></div>
+    <div class="hm-legend"></div>
   </div>
   <details class="tableview"><summary>Show the four frequency charts as a table</summary><div class="scroll"><table id="vFreqTable"></table></div></details>
 
@@ -367,6 +388,12 @@ table.matrix th{text-transform:none;letter-spacing:0;font-size:.78rem}
     <div class="panel"><h3>Over-injection <span class="hint">seller receives</span></h3><div class="slabs" id="vSlabOver"></div></div>
   </div>
   <p class="hint">RoR slabs are also capped at 150 MW and 200 MW, whichever is lower. The MSW slab has no MW cap (gap G-09). Under-injection beyond the last WS slab costs 200% of CR, while over-injection beyond it earns nothing.</p>
+
+  <div class="panel"><h3>The penalty curve: what a forecast error really costs <span class="tag">Reg 8(4), 8(4A)</span></h3>
+    <p class="hint">A 100 MW solar plant scheduled at 60 MW, contract rate ₹2.50/kWh. The plant is paid for its schedule, so the fair test is the loss against a perfect forecast: revenue it would have earned had it scheduled exactly what it generated. Left of zero it generated less than scheduled; right of zero, more.</p>
+    <div class="fchart" id="vPenalty"></div>
+    <p class="hint">Under the WS table the loss is the same on both sides: nothing inside VL1, 10% of the energy's value in VL2, and its full value beyond. Under parity (bids dated 2027 onwards, assumption G-13) the shape depends on frequency. At 50.00 Hz a shortfall costs nothing extra, but surplus beyond the limit is lost. At 49.85 Hz a shortfall becomes the expensive side. A parity plant should schedule more cautiously when low frequency is expected, such as the evening peak.</p>
+  </div>
 
   <div class="grid2">
     <div class="panel"><h3>Why 01-04-2026 matters for WS sellers <span class="tag">BR-DV-02 · DV-03</span></h3>
@@ -458,6 +485,7 @@ table.matrix th{text-transform:none;letter-spacing:0;font-size:.78rem}
       <div class="scroll"><table><thead><tr><th>Slab</th><th class="r">MW</th><th class="r">MWh</th><th class="r">% of base</th><th class="r">₹/kWh</th><th class="r">Amount ₹</th><th>Rule</th></tr></thead><tbody id="oSlabs"></tbody></table></div>
       <p class="hint" id="oNote"></p>
       <ul id="oNotes"></ul>
+      <details class="walk" open><summary>How this charge was worked out</summary><ol id="oSteps" class="steps"></ol></details>
     </div>
   </div>
   <div class="grid2">
@@ -971,6 +999,29 @@ function renderCalc() {
   const qty = i.infirm === 'pretrial' ? Math.max(0, i.A) : Math.abs(r.dev);
   $('oNote').textContent = `${qty.toFixed(2)} MW ${unitWord} over a 15-minute block = ${(qty * 0.25).toFixed(3)} MWh.` + (i.type === 'ws' && r.pricedAs === 'ws' ? ` Denominator = ${r.denom.toFixed(2)} MW.` : '') + ' A positive amount is receivable by the entity; a negative amount is payable to the pool.';
   $('oNotes').innerHTML = (r.notes || []).map(n => `<li>${esc(n)}</li>`).join('');
+  $('oSteps').innerHTML = explain(i, r).map(s => `<li>${s}</li>`).join('');
+}
+function explain(i, r) {
+  const n2 = v => v.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+  const basisName = { RR: 'reference rate', CR: 'contract rate', NR: 'normal rate', ECR: 'energy charge rate' }[r.basis];
+  if (i.infirm === 'pretrial') {
+    const s = r.slabs[0];
+    return [`The unit is still before its trial run, so this is <b>infirm power</b>, not a deviation. It injected ${n2(Math.max(0, i.A))} MW for 15 minutes = <b>${n2(s.mwh)} MWh</b>.`,
+      `The rule for this plant type on ${i.date.split('-').reverse().join('-')} is <span class="tag">${s.rule}</span>: ${s.unit ? `paid at NR (₹${n2(i.rate)}/kWh), capped, so <b>₹${s.unit.toFixed(2)}/kWh</b>` : '<b>zero</b>'}.`,
+      `${n2(s.mwh)} MWh × ₹${s.unit.toFixed(2)}/kWh × 1,000 = <b>${inr(r.total, 2)}</b>${r.total > 0 ? ', receivable by the plant' : ''}.`];
+  }
+  const buyer = i.type === 'buyer', over = r.dir === 'over';
+  const word = buyer ? (over ? 'over-drawal' : 'under-drawal') : (over ? 'over-injection' : 'under-injection');
+  const linked = ['gs', 'ess', 'buyer'].includes(r.pricedAs);
+  const steps = [];
+  const den = r.pricedAs === 'ws' ? `the WS denominator of ${n2(r.denom)} MW` : `the schedule of ${n2(i.S)} MW`;
+  steps.push(`Deviation = actual ${n2(i.A)} − scheduled ${n2(i.S)} = <b>${r.dev > 0 ? '+' : ''}${n2(r.dev)} MW</b> of ${word}` + (r.devPct != null && isFinite(r.devPct) ? `, which is ${n2(Math.abs(r.devPct))}% of ${den}.` : '.'));
+  const used = r.slabs.filter(s => s.mw > 0);
+  steps.push(used.length ? `It is split into volume slabs: ${used.map(s => `<b>${n2(s.mw)} MW</b> in “${esc(s.label)}”`).join(', ')}.` : 'There is no deviation, so nothing is charged.');
+  steps.push(linked ? `Frequency is <b>${i.f.toFixed(2)} Hz</b>, ${inBand(i.f) ? 'inside' : 'outside'} the 49.90–50.05 Hz band. For this entity it sets the rate in each slab.` : 'This entity is not frequency-linked, so the rate depends only on the slab.');
+  used.forEach(s => steps.push(`“${esc(s.label)}” is priced at <b>${n2(Math.abs(s.pct))}%</b> of the ${basisName} = ₹${n2(Math.abs(s.unit))}/kWh <span class="tag">${s.rule}</span>. ${n2(s.mwh)} MWh × ₹${n2(Math.abs(s.unit))} × 1,000 = ${inr(s.amt, 2)}.`));
+  if (used.length) steps.push(`Total = <b>${inr(r.total, 2)}</b>: ${r.total > 0 ? 'receivable by the entity from the pool' : r.total < 0 ? 'payable by the entity to the pool' : 'nothing changes hands'}.`);
+  return steps;
 }
 ['cType', 'cInf', 'cRoute', 'cPsp'].forEach(id => $(id).addEventListener('change', () => syncCalcUI(id === 'cType')));
 ['cS', 'cA', 'cF', 'cR', 'cDate', 'cTech', 'cAvc', 'cConn', 'cX', 'cKey', 'cKind', 'cCat'].forEach(id => $(id).addEventListener('input', renderCalc));
@@ -1118,7 +1169,8 @@ function freqChart(id, series) {
   s += `<text x="${L - 6}" y="${y(-12) + 4}" text-anchor="end" style="font-size:9px">pays</text>`;
   [49.80, 49.90, 50.00, 50.05, 50.10, 50.20].forEach(f => { s += `<line x1="${x(f)}" x2="${x(f)}" y1="${H - B}" y2="${H - B + 4}" style="stroke:var(--muted)"/><text x="${x(f)}" y="${H - B + 16}" text-anchor="middle">${f.toFixed(2)}</text>`; });
   s += `<text x="${(L + W - R) / 2}" y="${H - 2}" text-anchor="middle">Frequency (Hz)</text>`;
-  const path = d => d.map((v, i) => i ? `H${x(FX[i]).toFixed(1)}V${y(v).toFixed(1)}` : `M${x(FX[0]).toFixed(1)},${y(v).toFixed(1)}`).join('');
+  // Rates are defined at 0.01 Hz points, so each step changes halfway between two points.
+  const path = d => d.map((v, i) => i ? `H${((x(FX[i - 1]) + x(FX[i])) / 2).toFixed(1)}V${y(v).toFixed(1)}` : `M${x(FX[0]).toFixed(1)},${y(v).toFixed(1)}`).join('') + `H${x(FX[FX.length - 1]).toFixed(1)}`;
   data.forEach((d, k) => { const p = path(d); s += `<path d="${p}" style="fill:none;stroke:var(--surface);stroke-width:5;stroke-linejoin:round"/><path d="${p}" style="fill:none;stroke:${SER[k]};stroke-width:2;stroke-linejoin:round"/>`; });
   // direct labels at the right end, nudged apart
   const ends = data.map((d, k) => ({ k, y: y(d[d.length - 1]) })).sort((a, b) => a.y - b.y);
@@ -1172,7 +1224,7 @@ function qClass(v) { const a = Math.abs(v); return a === 0 ? 'q0' : a < 95 ? 'q2
 function slabBars(id, rows, max, unit, ticks) {
   const html = rows.map(r => {
     let prev = 0; const segs = r.segs.map(sg => { const to = Math.min(sg.to, max); const w = (to - prev) / max * 100; const from = prev; prev = to;
-      return `<span class="seg ${sg.cls || qClass(sg.val)}" style="flex:0 0 calc(${w}% - 2px)" title="${from}–${sg.to >= max ? max + '+' : to}${unit}: ${sg.text}">${sg.text}</span>`; }).join('');
+      return `<span class="seg ${sg.cls || qClass(sg.val)}" style="left:${from / max * 100}%;width:calc(${w}% - ${to >= max ? 0 : 2}px)" title="${from}–${sg.to >= max ? max + '+' : to}${unit}: ${sg.text}">${sg.text}</span>`; }).join('');
     const mark = r.mark != null ? `<span class="smark${r.mark / max > .6 ? ' right' : ''}" style="left:${r.mark / max * 100}%"><span>${r.markLabel}</span></span>` : '';
     return `<div class="srow"><span class="slabel">${r.label}${r.sub ? `<small>${r.sub}</small>` : ''}</span><span class="strack">${segs}${mark}</span></div>`;
   }).join('');
@@ -1248,7 +1300,7 @@ function renderNRBars() {
 
 (function infirmMatrix() {
   const cols = ['Principal<br><span class="hint">to 22-12-2024</span>', 'A1<br><span class="hint">from 23-12-2024</span>', 'A2<br><span class="hint">from 01-07-2025</span>', 'A3<br><span class="hint">from 31-08-2026</span>'];
-  const Z = ['z', 'Zero'], T = ['p', 'Paid at NR, max ₹2.86/kWh'], E = ['p', 'Paid at NR, max ₹2.00/kWh'], S = ['s', 'Seller rules'], S10 = ['s', 'Seller rules (pays 10% RR at ≥ 50.10 Hz)'];
+  const Z = ['z', 'Zero'], T = ['p', 'Paid at NR, max ₹2.86/kWh'], E = ['p', 'Paid at NR, max ₹2.00/kWh'], S = ['s', 'Seller rules'], S10 = ['s', 'Seller rules (general seller pays 10% RR at ≥ 50.10 Hz; WS seller paid CR)'];
   const rows = [
     ['Thermal unit, first sync to trial run', [Z, Z, T, T]],
     ['Standalone ESS, first sync to trial run', [Z, Z, Z, E]],
@@ -1279,6 +1331,104 @@ function renderParity() {
     { name: 'WS table', short: 'WS', fn: f => -settle({ ...base, f, route: 'bid', keyDate: '2026-12-01' }).total / energy * 100 },
     { name: 'General-seller table (parity)', short: 'Parity', fn: f => -settle({ ...base, f, route: 'bid', keyDate: '2027-02-01' }).total / energy * 100 },
   ]);
+})();
+
+
+/* ---------- Cost heatmap ---------- */
+// Discrete bands read more reliably than a continuous ramp: [upper bound %, colour token, legend label]
+const HM_BINS = [[0, 'sunk', '0% or receives'], [85, 'q1', 'up to 85%'], [100, 'q2', '85–100%'], [125, 'q3', '100–125%'], [150, 'q4', '125–150%'], [175, 'q5', '150–175%'], [1e9, 'q6', 'above 175%']];
+(function hmLegend() { const el = document.querySelector('.hm-legend'); el.innerHTML = '<span>Average rate:</span>' + HM_BINS.map(([, c, l]) => `<span class="hm-key"><i style="background:var(--${c})"></i>${l}</span>`).join(''); })();
+function heatmap(mode) {
+  const host = $('vHeat'); const W = 660, H = 340, L = 64, R = 12, T = 10, B = 46;
+  const mws = []; for (let m = 5; m <= 150; m += 5) mws.push(m);
+  const cw = (W - L - R) / FX.length, ch = (H - T - B) / mws.length;
+  const run = (f, m) => mode === 'gs' ? settle({ type: 'gs', S: 500, A: 500 - m, f, rate: 1 }) : settle({ type: 'buyer', S: 1500, A: 1500 + m, f, rate: 1, buyerCat: 'regular' });
+  const avg = r => -r.total / (Math.abs(r.dev) * 250) * 100; // % of base rate across the whole deviation
+  const fill = v => `var(--${HM_BINS.find(bn => v <= bn[0] + 1e-9)[1]})`;
+  const grid = mws.map(m => FX.map(f => { const r = run(f, m); return { r, v: avg(r) }; }));
+  const cx = i => L + i * cw, ry = k => T + (mws.length - 1 - k) * ch;
+  let s = `<svg viewBox="0 0 ${W} ${H}" tabindex="0" role="img" aria-label="Average deviation rate by frequency and deviation size">`;
+  grid.forEach((row, k) => row.forEach((c, i) => { s += `<rect x="${cx(i).toFixed(2)}" y="${ry(k).toFixed(2)}" width="${(cw + .4).toFixed(2)}" height="${(ch + .4).toFixed(2)}" style="fill:${fill(c.v)}"/>`; }));
+  const bx0 = cx(FX.indexOf(49.90)), bx1 = cx(FX.indexOf(50.05) + 1);
+  s += `<rect x="${bx0}" y="${T}" width="${bx1 - bx0}" height="${H - T - B}" style="fill:none;stroke:var(--ink);stroke-width:1.5"/>`;
+  const limits = mode === 'gs' ? [[50, 'limit 50 MW']] : [[100, 'VL1 | VL2'], [200, 'VL2 | VL3']];
+  limits.filter(([m]) => m <= 150).forEach(([m, lab]) => { const y = ry(mws.indexOf(m)); s += `<line x1="${L}" x2="${W - R}" y1="${y}" y2="${y}" style="stroke:var(--surface);stroke-width:3"/><line x1="${L}" x2="${W - R}" y1="${y}" y2="${y}" style="stroke:var(--ink);stroke-width:1.2;stroke-dasharray:5 4"/><text x="${W - R - 4}" y="${y - 4}" text-anchor="end" style="fill:var(--ink);font-weight:600;paint-order:stroke;stroke:var(--surface);stroke-width:3px">${lab}</text>`; });
+  [49.80, 49.90, 50.00, 50.05, 50.10, 50.20].forEach(f => { const x = cx(FX.indexOf(f)) + cw / 2; s += `<line x1="${x}" x2="${x}" y1="${H - B}" y2="${H - B + 4}" style="stroke:var(--muted)"/><text x="${x}" y="${H - B + 16}" text-anchor="middle">${f.toFixed(2)}</text>`; });
+  s += `<text x="${(L + W - R) / 2}" y="${H - 6}" text-anchor="middle">Frequency (Hz)</text>`;
+  [25, 50, 75, 100, 125, 150].forEach(m => { const k = mws.indexOf(m); s += `<text x="${L - 6}" y="${ry(k) + ch / 2 + 4}" text-anchor="end">${m} MW</text>`; });
+  s += `<text x="12" y="${(T + H - B) / 2}" transform="rotate(-90 12 ${(T + H - B) / 2})" text-anchor="middle">${mode === 'gs' ? 'Shortfall' : 'Over-drawal'}</text>`;
+  s += `<rect class="hcur" width="${cw}" height="${ch}" style="fill:none;stroke:var(--ink);stroke-width:2;display:none"/></svg>`;
+  host.innerHTML = s + '<div class="tip" hidden></div>';
+  const svg = host.querySelector('svg'), tip = host.querySelector('.tip'), cur = svg.querySelector('.hcur');
+  let pos = [FX.indexOf(49.95), mws.indexOf(80)];
+  function show(i, k) {
+    i = Math.max(0, Math.min(FX.length - 1, i)); k = Math.max(0, Math.min(mws.length - 1, k)); pos = [i, k];
+    const c = grid[k][i], used = c.r.slabs.filter(z => z.mw > 0);
+    cur.setAttribute('x', cx(i)); cur.setAttribute('y', ry(k)); cur.style.display = '';
+    tip.innerHTML = `<b>${FX[i].toFixed(2)} Hz · ${mws[k]} MW ${mode === 'gs' ? 'short' : 'over'}</b>Average: ${c.v.toFixed(1)}% of ${mode === 'gs' ? 'RR' : 'NR'}` + used.map(z => `<div>${z.mw} MW at ${Math.abs(z.pct).toFixed(2)}%${z.pct > 0 ? ' (receives)' : ''}</div>`).join('');
+    tip.hidden = false;
+    const r = svg.getBoundingClientRect(), hr = host.getBoundingClientRect(), sc = r.width / W;
+    let left = r.left - hr.left + host.scrollLeft + (cx(i) + cw) * sc + 10; if (left + tip.offsetWidth > host.scrollWidth) left -= tip.offsetWidth + cw * sc + 20;
+    tip.style.left = left + 'px'; tip.style.top = Math.max(0, r.top - hr.top + ry(k) * sc - 20) + 'px';
+  }
+  const hide = () => { tip.hidden = true; cur.style.display = 'none'; };
+  svg.addEventListener('pointermove', e => { const r = svg.getBoundingClientRect(); const vx = (e.clientX - r.left) / r.width * W, vy = (e.clientY - r.top) / r.height * H;
+    if (vx < L || vx > W - R || vy < T || vy > H - B) return hide(); show(Math.floor((vx - L) / cw), mws.length - 1 - Math.floor((vy - T) / ch)); });
+  svg.addEventListener('pointerleave', hide); svg.addEventListener('blur', hide); svg.addEventListener('focus', () => show(...pos));
+  svg.addEventListener('keydown', e => { const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[e.key]; if (d) { e.preventDefault(); show(pos[0] + d[0], pos[1] + d[1]); } if (e.key === 'Escape') hide(); });
+}
+document.querySelectorAll('[data-hm]').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('[data-hm]').forEach(x => { x.classList.toggle('on', x === btn); x.setAttribute('aria-pressed', x === btn); });
+  heatmap(btn.dataset.hm);
+}));
+heatmap('gs');
+
+/* ---------- Penalty curve ---------- */
+function lineChart(id, xs, series, o) {
+  const host = $(id); const W = 760, H = 300, L = 66, R = 96, T = 14, B = 40;
+  const data = series.map(s => xs.map(s.fn));
+  const all = data.flat(); let lo = Math.min(0, ...all), hi = Math.max(0, ...all);
+  const step = o.yStep; lo = Math.floor(lo / step) * step; hi = Math.ceil(hi / step) * step || step;
+  const x = v => L + (v - xs[0]) / (xs[xs.length - 1] - xs[0]) * (W - L - R), y = v => T + (hi - v) / (hi - lo) * (H - T - B);
+  let s = `<svg viewBox="0 0 ${W} ${H}" tabindex="0" role="img" aria-label="${o.label}">`;
+  for (let v = lo; v <= hi + 1e-9; v += step) s += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" style="stroke:var(--line);stroke-width:${v === 0 ? 1.4 : .6}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${o.yFmt(v)}</text>`;
+  o.xTicks.forEach(v => { s += `<line x1="${x(v)}" x2="${x(v)}" y1="${H - B}" y2="${H - B + 4}" style="stroke:var(--muted)"/><text x="${x(v)}" y="${H - B + 16}" text-anchor="middle">${o.xFmt(v)}</text>`; });
+  s += `<line x1="${x(0)}" x2="${x(0)}" y1="${T}" y2="${H - B}" style="stroke:var(--muted);stroke-dasharray:3 3"/>`;
+  s += `<text x="${x(xs[0]) + 4}" y="${T + 12}">← generated less</text><text x="${W - R - 4}" y="${T + 12}" text-anchor="end">generated more →</text>`;
+  s += `<text x="${(L + W - R) / 2}" y="${H - 4}" text-anchor="middle">${o.xLabel}</text>`;
+  data.forEach((d, k) => { const p = d.map((v, i) => `${i ? 'L' : 'M'}${x(xs[i]).toFixed(1)},${y(v).toFixed(1)}`).join(''); s += `<path d="${p}" style="fill:none;stroke:var(--surface);stroke-width:5;stroke-linejoin:round"/><path d="${p}" style="fill:none;stroke:${SER[k]};stroke-width:2;stroke-linejoin:round"/>`; });
+  const ends = data.map((d, k) => ({ k, y: y(d[d.length - 1]) })).sort((a, b) => a.y - b.y);
+  for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 13) ends[i].y = ends[i - 1].y + 13;
+  ends.forEach(e => { s += `<line x1="${W - R + 2}" x2="${W - R + 10}" y1="${e.y}" y2="${e.y}" style="stroke:${SER[e.k]};stroke-width:2"/><text x="${W - R + 13}" y="${e.y + 4}" style="fill:var(--ink)">${series[e.k].short}</text>`; });
+  s += `<g class="xh" style="display:none"><line y1="${T}" y2="${H - B}" style="stroke:var(--ink);stroke-dasharray:3 3"/>${data.map((_, k) => `<circle r="4.5" style="fill:${SER[k]};stroke:var(--surface);stroke-width:2"/>`).join('')}</g></svg>`;
+  host.innerHTML = `<div class="vlegend">${series.map((z, k) => `<span><i style="background:${SER[k]}"></i>${z.name}</span>`).join('')}</div>` + s + '<div class="tip" hidden></div>';
+  const svg = host.querySelector('svg'), xh = svg.querySelector('.xh'), tip = host.querySelector('.tip');
+  let cur = xs.indexOf(0);
+  function show(i) {
+    cur = Math.max(0, Math.min(xs.length - 1, i)); const px = x(xs[cur]);
+    xh.style.display = ''; const ln = xh.querySelector('line'); ln.setAttribute('x1', px); ln.setAttribute('x2', px);
+    xh.querySelectorAll('circle').forEach((c, k) => { c.setAttribute('cx', px); c.setAttribute('cy', y(data[k][cur])); });
+    tip.innerHTML = `<b>${o.xFmt(xs[cur])}</b>` + series.map((z, k) => `<div><i style="background:${SER[k]}"></i>${z.short}: ${o.tipFmt(data[k][cur])}</div>`).join(''); tip.hidden = false;
+    const r = svg.getBoundingClientRect(), hr = host.getBoundingClientRect(), sc = r.width / W;
+    let left = r.left - hr.left + host.scrollLeft + px * sc + 12; if (left + tip.offsetWidth > host.scrollWidth) left -= tip.offsetWidth + 24;
+    tip.style.left = left + 'px'; tip.style.top = (r.top - hr.top + 30) + 'px';
+  }
+  const hide = () => { xh.style.display = 'none'; tip.hidden = true; };
+  svg.addEventListener('pointermove', e => { const r = svg.getBoundingClientRect(); const vx = (e.clientX - r.left) / r.width * W; show(Math.round((vx - L) / (W - L - R) * (xs.length - 1))); });
+  svg.addEventListener('pointerleave', hide); svg.addEventListener('blur', hide); svg.addEventListener('focus', () => show(cur));
+  svg.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); show(cur + (e.key === 'ArrowRight' ? 1 : -1)); } if (e.key === 'Escape') hide(); });
+}
+(function penalty() {
+  const xs = []; for (let v = -20; v <= 20.001; v += 0.5) xs.push(Math.round(v * 10) / 10);
+  const base = { type: 'ws', S: 60, rate: 2.5, wsTech: 'solar', avc: 100, X: 50 };
+  const loss = r => r.total - r.dev * 0.25 * 1000 * 2.5; // vs being paid for exactly what was generated
+  lineChart('vPenalty', xs, [
+    { name: 'WS table (from 01-04-2026)', short: 'WS', fn: d => loss(settle({ ...base, A: 60 + d, f: 50.00, date: '2026-11-08' })) },
+    { name: 'Parity at 50.00 Hz', short: 'Parity 50.00', fn: d => loss(settle({ ...base, A: 60 + d, f: 50.00, route: 'bid', keyDate: '2027-02-01', date: '2027-06-01' })) },
+    { name: 'Parity at 49.85 Hz', short: 'Parity 49.85', fn: d => loss(settle({ ...base, A: 60 + d, f: 49.85, route: 'bid', keyDate: '2027-02-01', date: '2027-06-01' })) },
+  ], { label: 'Loss against a perfect forecast by deviation size', yStep: 2000, xTicks: [-20, -15, -10, -5, 0, 5, 10, 15, 20],
+    xFmt: v => (v > 0 ? '+' : '') + v + ' MW', yFmt: v => v === 0 ? '₹0' : (v < 0 ? '−' : '+') + '₹' + Math.abs(v / 1000) + 'k', tipFmt: v => inr(v),
+    xLabel: 'Actual minus schedule, MW (one 15-minute block)' });
 })();
 
 /* ---------- boot ---------- */
