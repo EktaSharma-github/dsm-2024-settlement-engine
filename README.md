@@ -2,7 +2,9 @@
 
 A Functional Business Analyst portfolio project. It turns the **CERC (Deviation Settlement Mechanism and Related Matters) Regulations, 2024** (No. L-1/260/2021/CERC, 05 Aug 2024) into a full requirements pack and a working, tested settlement engine for Indian power markets.
 
-**Live demo:** open `index.html` in any browser. It's a single file with no build step or dependencies.
+**Live demo:** https://ektasharma-github.github.io/dsm-2024-settlement-engine/
+
+You can also open `index.html` locally. It's a single file with no build step or dependencies.
 
 ## What's inside
 

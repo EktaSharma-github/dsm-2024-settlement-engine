@@ -1,3 +1,9 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Functional BA case study: CERC DSM Regulations 2024 turned into traceable business rules, user stories, a clarification log and a tested settlement engine.">
 <title>DSM 2024 Settlement Engine</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -99,6 +105,10 @@ pre.mermaid{background:var(--surface);border:1px solid var(--line);border-radius
 footer{padding-block:32px 48px;border-top:1px solid var(--line);color:var(--muted);font-size:.85rem;display:grid;gap:6px}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
+</head>
+<body>
+
 <nav class="top" aria-label="Sections"><div class="wrap">
 <span class="brand">DSM&nbsp;2024</span>
 <a href="#context">Context</a><a href="#process">Process</a><a href="#rules">Business rules</a><a href="#calculator">Calculator</a><a href="#simulator">Day simulator</a><a href="#tests">Test suite</a><a href="#stories">User stories</a><a href="#gaps">Clarification log</a><a href="#delivery">Data &amp; delivery</a>
@@ -737,3 +747,13 @@ $('simReset').addEventListener('click', () => { $('simCsv').value = sampleCSV();
 $('simCsv').value = sampleCSV();
 syncCalcUI(false); renderNR(); renderLPS(); runSim();
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+if (window.mermaid) {
+  const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+  mermaid.initialize({ startOnLoad: true, theme: dark ? 'dark' : 'neutral', securityLevel: 'strict' });
+}
+</script>
+</body>
+</html>
