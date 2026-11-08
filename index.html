@@ -179,6 +179,25 @@ details.tableview table{margin-top:10px}
 .nrb .val{text-align:right;color:var(--ink)}
 .nrb.win .val{font-weight:600}
 
+
+/* ---- Amendments ---- */
+.amd{display:inline-block;font:600 .68rem var(--f-mono);padding:1px 6px;border-radius:4px;border:1px solid var(--accent);color:var(--accent);white-space:nowrap;margin-right:2px}
+table.matrix td,table.matrix th{vertical-align:middle}
+table.matrix th{text-transform:none;letter-spacing:0;font-size:.78rem}
+.mx{display:inline-block;padding:4px 8px;border-radius:4px;font-size:.8rem;line-height:1.3}
+.mx.z{border:1px dashed var(--line);color:var(--muted)}
+.mx.p{background:var(--q3);color:var(--q-lo);font-weight:600}
+.mx.s{background:var(--sunk);color:var(--ink)}
+.mx.chg{outline:2px solid var(--ink);outline-offset:1px}
+.pflow{display:grid;gap:6px}
+.pq{font-weight:600}
+.pa{padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);font-size:.88rem}
+.pa.muted{color:var(--muted)}
+.field.check{display:flex;align-items:center;gap:8px}
+.field.check input{width:auto}
+#oNotes{margin:0;padding-left:1.1em;display:grid;gap:4px;font-size:.84rem}
+#oNotes:empty{display:none}
+
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style>
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
@@ -187,17 +206,18 @@ details.tableview table{margin-top:10px}
 
 <nav class="top" aria-label="Sections"><div class="wrap">
 <span class="brand">DSM&nbsp;2024</span>
-<a href="#context">Context</a><a href="#process">Process</a><a href="#rules">Business rules</a><a href="#visual">Rules, visually</a><a href="#calculator">Calculator</a><a href="#simulator">Day simulator</a><a href="#tests">Test suite</a><a href="#stories">User stories</a><a href="#gaps">Clarification log</a><a href="#delivery">Data &amp; delivery</a>
+<a href="#context">Context</a><a href="#process">Process</a><a href="#rules">Business rules</a><a href="#amendments">Amendments</a><a href="#visual">Rules, visually</a><a href="#calculator">Calculator</a><a href="#simulator">Day simulator</a><a href="#tests">Test suite</a><a href="#stories">User stories</a><a href="#gaps">Clarification log</a><a href="#delivery">Data &amp; delivery</a>
 </div></nav>
 
 <div class="wrap">
 <header class="hero">
   <span class="eyebrow">Functional Business Analyst · Case study · Indian power markets</span>
   <h1>DSM 2024 Settlement Engine</h1>
-  <p class="lede">I turned the CERC Deviation Settlement Mechanism Regulations, 2024 into a requirements pack and a working settlement engine. The pack covers the problem, stakeholders, process, <span data-rule-count>49</span> traceable business rules, user stories, a gap log, and a regression suite. The engine prices every 15-minute block for generators, renewables, storage and buyers.</p>
+  <p class="lede">I turned the CERC Deviation Settlement Mechanism Regulations, 2024 into a requirements pack and a working settlement engine, updated for all three amendments to date. The pack covers the problem, stakeholders, process, <span data-rule-count>58</span> traceable business rules, user stories, a gap log, and a regression suite. The engine prices every 15-minute block for generators, renewables, storage and buyers.</p>
   <div class="meta">
     <span class="chip">Source: CERC No. L-1/260/2021/CERC · 05 Aug 2024</span>
     <span class="chip">Repeals DSM Regulations 2022</span>
+    <span class="chip">Incl. Amendments 1–3 (in force 31-08-2026)</span>
     <span class="chip">96 time blocks / day</span>
     <span class="chip">Band 49.90–50.05 Hz</span>
   </div>
@@ -242,7 +262,53 @@ details.tableview table{margin-top:10px}
 <section id="rules">
   <div class="sec-head"><span class="eyebrow">03 · Business rules</span><h2>Rule catalogue, traced to clauses</h2>
   <p>Each rule has an ID that the engine prints on every charge line. The next section draws the same rules as charts. QA, client success and the regulator can then follow a rupee back to the clause that produced it. RR = reference charge rate, CR = contract rate, NR = normal rate, S = schedule, f = frequency.</p></div>
-  <div class="scroll"><table id="ruleTable"><thead><tr><th>ID</th><th>Clause</th><th>Applies to</th><th>Rule</th></tr></thead><tbody></tbody></table></div>
+  <div class="scroll"><table id="ruleTable"><thead><tr><th>ID</th><th>Clause</th><th>Applies to</th><th>Rule</th><th>Source</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section id="amendments">
+  <div class="sec-head"><span class="eyebrow">03a · Change control</span><h2>Three amendments, one effective-dated engine</h2>
+  <p>CERC has amended the 2024 regulation three times. I captured each change as a dated rule, so every block is priced under the version in force on its date. A thermal unit's infirm power on 30-06-2025 and on 01-07-2025 prices differently, and the engine can say why.</p></div>
+  <div class="panel"><h3>Effective-date timeline</h3>
+    <div class="scroll" id="amdTimeline"></div>
+    <p class="hint">Filled markers are dates already in force. Hollow markers are future dates that the rules already refer to. Today is 08-11-2026.</p>
+  </div>
+  <div class="scroll"><table>
+    <thead><tr><th>Amendment</th><th>Clause</th><th>What changed</th><th>Rules</th><th>Product impact</th><th>Tests</th></tr></thead>
+    <tbody>
+      <tr><td><span class="amd">A1</span> 23-12-2024</td><td class="mono">3(1)(g)</td><td>Available capacity is limited to the connectivity granted.</td><td><span class="tag">BR-DV-05</span></td><td>Connectivity becomes a plant input. The WS denominator uses the lower of the two.</td><td class="mono">TC20</td></tr>
+      <tr><td><span class="amd">A1</span> 23-12-2024</td><td class="mono">3(1)(j), 3(1)(y)</td><td>Sellers supplying a third party through open access are priced at the weighted IDAM price: contract rate for WS and MSW sellers, reference rate for general sellers.</td><td><span class="tag">BR-RT-01</span> <span class="tag">BR-RT-02</span></td><td>Each contract needs a rate source: tariff order, exchange price or IDAM feed.</td><td class="mono">Rate input</td></tr>
+      <tr><td><span class="amd">A1</span> <span class="amd">A2</span> 01-07-2025</td><td class="mono">8(8)</td><td>A1 made over-injection of scheduled infirm power zero above 50.05 Hz. A2 rewrote the clause: thermal infirm power from first synchronisation to the trial run is paid at NR, capped at ₹2.86/kWh, and all infirm injection above 50.05 Hz is zero.</td><td><span class="tag">BR-IF-01</span> <span class="tag">BR-IF-02</span> <span class="tag">BR-IF-04</span> <span class="tag">BR-IF-05</span></td><td>Plant lifecycle dates (first sync, trial run, COD) become inputs.</td><td class="mono">TC14–16, TC19</td></tr>
+      <tr><td><span class="amd">A3</span> 31-08-2026</td><td class="mono">8(8)(2A)</td><td>Standalone storage infirm power is paid at NR, capped at ₹2.00/kWh.</td><td><span class="tag">BR-IF-03</span></td><td>The same lifecycle data is needed for storage.</td><td class="mono">TC17–18</td></tr>
+      <tr><td><span class="amd">A3</span> 31-08-2026</td><td class="mono">8(4A)</td><td>New wind and solar projects are priced as general sellers: bidding route with tender or bid date on or after 01-01-2027, or other projects with COD on or after 01-01-2029.</td><td><span class="tag">BR-WS-05</span></td><td>The project master needs route and bid/COD dates. For these plants, forecasting cost models must become frequency-aware.</td><td class="mono">TC21–22</td></tr>
+      <tr><td><span class="amd">A3</span> 31-08-2026</td><td class="mono">8(5) Note</td><td>Pumped hydro under Section 62 is priced at the energy charge rate (CERC Tariff Regulations 2024, Reg 66(3)).</td><td><span class="tag">BR-ES-04</span></td><td>New rate source: ECR from tariff orders.</td><td class="mono">Rate input</td></tr>
+      <tr><td><span class="amd">A3</span> 31-08-2026</td><td class="mono">10(1), 10(3)</td><td>Payment is due within 10 days, or within the timeline in the national pool account's Detailed Procedure.</td><td><span class="tag">BR-PY-01</span> <span class="tag">BR-PY-03</span></td><td>The due-day count becomes configuration.</td><td class="mono">TC23</td></tr>
+    </tbody></table></div>
+
+  <div class="panel"><h3>Infirm power: how the rule changed <span class="tag">Reg 8(8)</span></h3>
+    <p class="hint">Infirm power is energy a new unit injects before it is declared commercial. Outlined cells are where an amendment changed the outcome.</p>
+    <div class="scroll"><table class="matrix" id="infirmMatrix"></table></div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel"><h3>Does a WS project move to the general-seller table? <span class="tag">BR-WS-05</span></h3>
+      <div class="pflow">
+        <span class="pq">Bidding route?</span>
+        <span class="pa"><b>Yes:</b> tender or bid date on or after 01-01-2027 → general-seller table</span>
+        <span class="pa"><b>No:</b> COD on or after 01-01-2029 → general-seller table</span>
+        <span class="pa muted">Otherwise → WS table (volume-linked, contract rate)</span>
+      </div>
+      <form class="row2" id="parityForm" autocomplete="off">
+        <div class="field"><label for="pRoute">Route</label><select id="pRoute"><option value="bid">Bidding (tariff-based tender)</option><option value="other">Other (PPA, captive, merchant)</option></select></div>
+        <div class="field"><label for="pDate" id="pDateLbl">Tender or bid submission date</label><input id="pDate" type="date" value="2027-02-01"></div>
+      </form>
+      <p id="pOut"></p>
+    </div>
+    <div class="panel"><h3>What parity does to the same shortfall</h3>
+      <p class="hint">A solar plant, 100 MW available, scheduled at 60 MW, generating 50 MW. The line shows the average rate on the 10 MW shortfall as a % of contract rate, under each table.</p>
+      <div class="fchart" id="vParity"></div>
+    </div>
+  </div>
+  <p class="hint">At 50.00 Hz parity is cheaper for this block: ₹6,250 against ₹7,750. When the grid is short of power it is dearer: 150% of CR at 49.90 Hz and 170% below it, against a flat 124%. Forecast error now costs most when frequency is low, so these plants need frequency-aware scheduling.</p>
 </section>
 
 <section id="visual">
@@ -252,7 +318,8 @@ details.tableview table{margin-top:10px}
   <div class="panel"><h3>Which table prices my deviation? <span class="tag">Reg 8</span></h3>
     <div class="tree">
       <div class="lane"><span class="lane-h">Seller</span>
-        <div class="node"><span class="if">Wind, solar or hybrid?</span><span class="then">WS table · no frequency link</span><span class="tag">BR-WS-01–04</span></div>
+        <div class="node"><span class="if">Wind or solar project bid on or after 01-01-2027, or COD on or after 01-01-2029</span><span class="then">General-seller table · frequency-linked</span><span class="tag">BR-WS-05 · A3</span></div>
+        <div class="node"><span class="if">Any other wind, solar or hybrid plant</span><span class="then">WS table · no frequency link</span><span class="tag">BR-WS-01–04</span></div>
         <div class="node"><span class="if">Run-of-River hydro?</span><span class="then">RoR table · no frequency link</span><span class="tag">BR-RR-01–02</span></div>
         <div class="node"><span class="if">Municipal solid waste?</span><span class="then">MSW table · contract rate</span><span class="tag">BR-MS-01–02</span></div>
         <div class="node"><span class="if">Anything else</span><span class="then">General-seller table · frequency-linked</span><span class="tag">BR-GS-01–12</span></div>
@@ -266,9 +333,12 @@ details.tableview table{margin-top:10px}
         <div class="node"><span class="if">Standalone ESS</span><span class="then">General-seller table, signs flipped while charging</span><span class="tag">BR-ES-01</span></div>
         <div class="node"><span class="if">Pumped hydro charging, to 31-03-2026</span><span class="then">WS solar table</span><span class="tag">BR-ES-02</span></div>
         <div class="node"><span class="if">ESS at a wind/solar plant</span><span class="then">Table follows whichever unit is injecting</span><span class="tag">BR-ES-03</span></div>
+        <div class="node"><span class="if">Pumped hydro under Section 62</span><span class="then">Priced at the energy charge rate</span><span class="tag">BR-ES-04 · A3</span></div>
       </div>
       <div class="lane"><span class="lane-h">Special cases (override)</span>
-        <div class="node"><span class="if">Infirm power before COD</span><span class="then">Zero charge</span><span class="tag">BR-IF-01</span></div>
+        <div class="node"><span class="if">Infirm power before the trial run completes</span><span class="then">Zero, except thermal (NR, max ₹2.86) and ESS (NR, max ₹2.00)</span><span class="tag">BR-IF-01–03 · A2, A3</span></div>
+        <div class="node"><span class="if">Infirm power above 50.05 Hz</span><span class="then">Zero charge</span><span class="tag">BR-IF-05</span></div>
+        <div class="node"><span class="if">Selling to a third party via open access</span><span class="then">CR or RR = weighted IDAM price</span><span class="tag">BR-RT-01–02 · A1</span></div>
         <div class="node"><span class="if">Start-up or auxiliary drawal</span><span class="then">RR or CR, else DAM price</span><span class="tag">BR-SU-01</span></div>
         <div class="node"><span class="if">Forced outage</span><span class="then">RR for up to 8 blocks</span><span class="tag">BR-OT-01</span></div>
         <div class="node"><span class="if">Sold on HP-DAM, under-injected</span><span class="then">RR = HP-DAM price</span><span class="tag">BR-HP-01</span></div>
@@ -360,11 +430,19 @@ details.tableview table{margin-top:10px}
         <div class="field"><label for="cF">Frequency (Hz)</label><input id="cF" type="number" step="0.01" min="49.5" max="50.5" value="50.00"></div>
         <div class="field"><label for="cR" id="lblR">Contract rate ₹/kWh</label><input id="cR" type="number" step="0.01" value="2.50"></div>
       </div>
+      <div class="row2">
+        <div class="field"><label for="cDate">Block date</label><input id="cDate" type="date" value="2026-11-08"></div>
+        <div class="field" id="infField"><label for="cInf">Infirm power</label><select id="cInf"><option value="none">No, commercial operation</option><option value="pretrial">Yes, before trial run completes</option><option value="scheduled">Yes, scheduled after trial run</option></select></div>
+      </div>
+      <div class="field" id="kindField" hidden><label for="cKind">Plant kind</label><select id="cKind"><option value="thermal">Thermal (coal, gas, lignite)</option><option value="other">Other (hydro, etc.)</option></select></div>
+      <div class="field check" id="pspField" hidden><input id="cPsp" type="checkbox"><label for="cPsp">Pumped hydro under Section 62 (rate = ECR)</label></div>
       <div id="wsFields" class="row2">
         <div class="field"><label for="cTech">Technology</label><select id="cTech"><option value="solar">Solar / hybrid</option><option value="wind">Wind</option></select></div>
-        <div class="field"><label for="cReg">Regime</label><select id="cReg"><option value="post" selected>From 01-04-2026</option><option value="pre">To 31-03-2026</option></select></div>
-        <div class="field"><label for="cAvc">Available capacity MW</label><input id="cAvc" type="number" step="0.01" value="100"></div>
         <div class="field"><label for="cX">X % (CERC order)</label><input id="cX" type="number" step="1" min="0" max="100" value="50"></div>
+        <div class="field"><label for="cAvc">Available capacity MW</label><input id="cAvc" type="number" step="0.01" value="100"></div>
+        <div class="field"><label for="cConn">Connectivity granted MW</label><input id="cConn" type="number" step="0.01" value="100"></div>
+        <div class="field"><label for="cRoute">Project route</label><select id="cRoute"><option value="bid">Bidding (tender)</option><option value="other">Other</option></select></div>
+        <div class="field"><label for="cKey" id="lblKey">Tender / bid date</label><input id="cKey" type="date" value="2023-06-15"></div>
       </div>
       <div id="buyerFields" class="field" hidden><label for="cCat">Buyer category</label>
         <select id="cCat"><option value="regular">Regular (schedule above 400 MW)</option><option value="small">Schedule up to 400 MW</option><option value="rerich">RE-rich state (1–5 GW RE)</option><option value="superrich">RE super-rich state (≥ 5 GW RE)</option></select></div>
@@ -379,6 +457,7 @@ details.tableview table{margin-top:10px}
       <div class="freq" id="freqStrip"></div>
       <div class="scroll"><table><thead><tr><th>Slab</th><th class="r">MW</th><th class="r">MWh</th><th class="r">% of base</th><th class="r">₹/kWh</th><th class="r">Amount ₹</th><th>Rule</th></tr></thead><tbody id="oSlabs"></tbody></table></div>
       <p class="hint" id="oNote"></p>
+      <ul id="oNotes"></ul>
     </div>
   </div>
   <div class="grid2">
@@ -392,7 +471,10 @@ details.tableview table{margin-top:10px}
       <div class="nrbars" id="nBars" aria-label="Normal rate components"></div>
     </form>
     <form class="panel" id="lpForm" autocomplete="off"><h3>Late payment surcharge (Reg 10) <span class="tag">BR-PY-01</span></h3>
-      <div class="field"><label for="lAmt">Statement amount payable ₹</label><input id="lAmt" type="number" step="1" value="1250000"></div>
+      <div class="row2">
+        <div class="field"><label for="lAmt">Statement amount payable ₹</label><input id="lAmt" type="number" step="1" value="1250000"></div>
+        <div class="field"><label for="lDue">Due within (days)</label><input id="lDue" type="number" step="1" min="1" value="10"></div>
+      </div>
       <div class="row2">
         <div class="field"><label for="lIss">Statement issued</label><input id="lIss" type="date" value="2026-11-03"></div>
         <div class="field"><label for="lPay">Paid on</label><input id="lPay" type="date" value="2026-11-18"></div>
@@ -465,6 +547,21 @@ details.tableview table{margin-top:10px}
 <pre class="gherkin"><b>Given</b> the ESS is in charging mode
 <b>When</b> it draws 5 MW more than scheduled
 <b>Then</b> it is priced as a 5 MW under-injection on the general-seller table</pre></div>
+    <div class="panel"><h3>US-07 · Amendment-aware pricing <span class="pill high">Must</span></h3>
+      <p>As a <b>settlement analyst</b>, I want each block priced under the rule version in force on its date so that history, the current week and future projects all reconcile after an amendment.</p>
+<pre class="gherkin"><b>Given</b> a thermal unit injecting 100 MW of infirm power, NR ₹3.40
+<b>When</b> the block is dated 30-06-2025
+<b>Then</b> the charge is ₹0 (BR-IF-01)
+<b>When</b> the block is dated 01-07-2025
+<b>Then</b> the unit receives ₹71,500 at the ₹2.86 cap (BR-IF-02)
+<b>And</b> each charge line records the amendment it used</pre></div>
+    <div class="panel"><h3>US-08 · Flag projects moving to parity <span class="pill med">Should</span></h3>
+      <p>As a <b>QCA account manager</b>, I want wind and solar clients flagged when Reg 8(4A) will move them to the general-seller table so that I can sell them frequency-aware scheduling early.</p>
+<pre class="gherkin"><b>Given</b> a project with a bid date of 01-02-2027
+<b>Then</b> it is tagged "General-seller table" (BR-WS-05)
+<b>And</b> its DSM estimate uses the frequency-linked rates
+<b>Given</b> the bid and tender dates fall either side of 01-01-2027
+<b>Then</b> the project is flagged for review (G-14)</pre></div>
     <div class="panel"><h3>US-06 · Rule configuration <span class="pill low">Could</span></h3>
       <p>As a <b>business analyst</b>, I want slab limits and rate percentages stored as dated configuration so that a CERC amendment is a data change that QA can test without a code release.</p>
 <pre class="gherkin"><b>Given</b> CERC notifies X = 60% from a date
@@ -489,7 +586,8 @@ details.tableview table{margin-top:10px}
       <tr><td>Grid frequency</td><td>RLDC SCADA, block average</td><td>Hz to 0.01</td><td>Range 49.0–51.0; see G-04</td></tr>
       <tr><td>IDAM / RTM / HP-DAM area clearing prices</td><td>IEX, PXIL, HPX market data</td><td>₹/MWh per block, volume-weighted across exchanges</td><td>If missing, use the same block from the last available day (Reg 7 proviso)</td></tr>
       <tr><td>Ancillary service charge</td><td>NLDC / RLDC SRAS-Up and TRAS-Up accounts</td><td>Paise/kWh per block</td><td>Cross-check with the pool account</td></tr>
-      <tr><td>Contract / reference rate, entity master</td><td>Client PPA and tariff orders</td><td>₹/kWh, effective dated</td><td>Multiple contracts use a weighted average (Reg 3(j)(iv), 3(y)(iv))</td></tr>
+      <tr><td>Project master (amendment inputs)</td><td>CTUIL connectivity records, tender documents, RLDC trial-run and COD certificates</td><td>Per plant, effective dated</td><td>Connectivity MW, route, bid and tender dates, first sync, trial-run completion, COD, plant kind</td></tr>
+      <tr><td>Contract / reference rate, entity master</td><td>Client PPA and tariff orders</td><td>₹/kWh, effective dated</td><td>Multiple contracts use a weighted average (Reg 3(j)(iv), 3(y)(iv)). Third-party open access uses the IDAM price (A1). Section 62 PSP uses ECR (A3)</td></tr>
     </tbody></table></div>
   <div class="grid3">
     <div class="panel"><h3>Non-functional needs</h3><ul class="tight"><li>Price 672 blocks × 500 entities in under 60 s</li><li>Effective-dated, versioned rule configuration with an audit trail</li><li>Decimal arithmetic, rounding only where the regulation says (NR to 2 dp)</li><li>Every charge line stores inputs, rule ID and config version</li></ul></div>
@@ -499,12 +597,12 @@ details.tableview table{margin-top:10px}
 </section>
 
 <footer>
-  <span>Prepared as a Functional Business Analyst portfolio case study. Built from the CERC (Deviation Settlement Mechanism and Related Matters) Regulations, 2024. This is not legal or commercial advice. The Day simulator uses synthetic data.</span>
+  <span>Prepared as a Functional Business Analyst portfolio case study. Built from the CERC (Deviation Settlement Mechanism and Related Matters) Regulations, 2024, with the First (2024), Second (2025) and Third (2026) Amendments. This is not legal or commercial advice. The Day simulator uses synthetic data.</span>
   <span>The engine source sits in this page's script and was tested against the regression suite above.</span>
 </footer>
 </div>
 <script>
-// DSM 2024 engine (CERC Reg. L-1/260/2021/CERC). Sign convention: + receivable by entity, - payable by entity.
+// DSM 2024 engine (CERC Reg. L-1/260/2021/CERC, with First, Second and Third Amendments). Sign convention: + receivable by entity, - payable by entity.
 const BLOCK_H = 0.25; // 15-min time block
 const r2 = x => Math.round(x * 100) / 100;
 const steps = (a, b) => Math.round(Math.abs(a - b) / 0.01); // 0.01 Hz steps
@@ -598,14 +696,61 @@ const WS_LIMITS = { // % of denominator, Reg 8(4) Note-1
   post: { solar: [5, 10], wind: [10, 15] },
 };
 
-/* input: { type: 'gs'|'ess'|'ror'|'msw'|'ws'|'buyer', S, A, f, rate (₹/kWh, RR / CR / NR),
-   wsTech:'solar'|'wind', regime:'pre'|'post', avc, X, buyerCat:'regular'|'small'|'rerich'|'superrich' } */
+// Effective dates (principal regulation + amendments). Every dated rule reads from here.
+const EFFECTIVE = {
+  A1: '2024-12-23',          // First Amendment 2024
+  A2: '2025-07-01',          // Second Amendment 2025
+  WS_REGIME: '2026-04-01',   // Principal Reg 6(2)(b) / Note-1(ii)
+  A3: '2026-08-31',          // Third Amendment 2026
+  PARITY_BID: '2027-01-01',  // Reg 8(4A)(a)
+  PARITY_COD: '2029-01-01',  // Reg 8(4A)(b)
+};
+const INFIRM_CAP = { thermal: 2.86, ess: 2.00 }; // ₹/kWh, Reg 8(8)(2) and 8(8)(2A)
+const ms = d => Date.parse(d + 'T00:00:00Z');
+const onOrAfter = (date, key) => ms(date) >= ms(EFFECTIVE[key]);
+const DEFAULT_DATE = '2026-11-08';
+
+// Reg 8(4A): does a WS project move to the general-seller table?
+function wsParity(route, keyDate, blockDate = DEFAULT_DATE) {
+  if (!keyDate || !onOrAfter(blockDate, 'A3')) return false;
+  return ms(keyDate) >= ms(EFFECTIVE[route === 'bid' ? 'PARITY_BID' : 'PARITY_COD']);
+}
+
+// Reg 8(8) as substituted by A2 and amended by A3: infirm injection before the trial run completes.
+function infirmPreTrial(inp, date) {
+  const f = +inp.f, nr = +inp.rate, A = +inp.A;
+  const kind = inp.type === 'ess' ? 'ess' : inp.plantKind === 'thermal' ? 'thermal' : 'other';
+  let unit = 0, rule = 'BR-IF-01', note;
+  const capFrom = { thermal: 'A2', ess: 'A3' }[kind];
+  if (capFrom && onOrAfter(date, capFrom)) {
+    if (f > 50.05) { rule = 'BR-IF-05'; note = 'Frequency above 50.05 Hz: infirm injection is charged at zero (Reg 8(8)(4)).'; }
+    else { unit = Math.min(nr, INFIRM_CAP[kind]); rule = kind === 'thermal' ? 'BR-IF-02' : 'BR-IF-03';
+      note = `Paid at NR capped at ₹${INFIRM_CAP[kind].toFixed(2)}/kWh (${kind === 'thermal' ? 'A2, from 01-07-2025' : 'A3, from 31-08-2026'}).`; }
+  } else note = capFrom ? `Before ${kind === 'thermal' ? '01-07-2025' : '31-08-2026'} this infirm injection was charged at zero.` : 'Infirm injection is charged at zero for this plant type.';
+  const mwh = Math.max(0, A) * BLOCK_H, amt = mwh * 1000 * unit;
+  return { dev: A - +inp.S, dir: 'over', devPct: null, denom: 0, basis: 'NR', notes: [note],
+    slabs: [{ label: 'Infirm injection before trial run', mw: Math.max(0, A), mwh, pct: nr ? unit / nr * 100 : 0, unit, amt, rule }], total: r2(amt) + 0 };
+}
+
+/* input: { type: 'gs'|'ess'|'ror'|'msw'|'ws'|'buyer', S, A, f, rate (₹/kWh: RR / CR / NR / ECR),
+   date (block date, YYYY-MM-DD), wsTech:'solar'|'wind', regime:'pre'|'post' (optional, else from date),
+   avc, conn (connectivity MW), X, route:'bid'|'other', keyDate (bid/tender date or COD),
+   buyerCat:'regular'|'small'|'rerich'|'superrich', infirm:'none'|'pretrial'|'scheduled',
+   plantKind:'thermal'|'other', psp62 (bool) } */
 function settle(inp) {
-  const { type, S, A } = inp; const f = +inp.f; const rate = +inp.rate;
+  const date = inp.date || DEFAULT_DATE;
+  if (inp.infirm === 'pretrial' && inp.type !== 'buyer') return infirmPreTrial(inp, date);
+  const { S, A } = inp; const f = +inp.f; const rate = +inp.rate;
   const dev = A - S; const abs = Math.abs(dev);
-  let denom = S, limits = [], labels = [], rates = [], basis = 'RR', notes = [];
+  let denom = S, limits = [], labels = [], rates = [], basis = 'RR'; const notes = [];
   const dir = dev >= 0 ? 'over' : 'under';
+  let type = inp.type;
+  if (type === 'ws' && wsParity(inp.route, inp.keyDate, date)) {
+    type = 'gs'; basis = 'CR';
+    notes.push(`Priced as a general seller under Reg 8(4A) (A3): ${inp.route === 'bid' ? 'bid or tender date on or after 01-01-2027' : 'COD on or after 01-01-2029'} (BR-WS-05).`);
+  }
   if (type === 'gs' || type === 'ess') {
+    if (inp.type === 'ess' && inp.psp62) { basis = 'ECR'; notes.push('Pumped hydro under Section 62: priced at the energy charge rate (Reg 8(5) Note, A3, BR-ES-04).'); }
     limits = [Math.min(0.10 * S, 100)]; labels = ['≤ min(10% S, 100 MW)', 'Beyond'];
     rates = [0, 1].map(k => gsRate(dir, k, f));
   } else if (type === 'ror') {
@@ -620,9 +765,12 @@ function settle(inp) {
       : [{ pct: -100, rule: 'BR-MS-02' }, { pct: -110, rule: 'BR-MS-02' }];
   } else if (type === 'ws') {
     basis = 'CR';
-    const X = inp.regime === 'post' ? +inp.X : 100;
-    denom = inp.regime === 'post' ? (X / 100) * inp.avc + ((100 - X) / 100) * S : inp.avc;
-    const [p1, p2] = WS_LIMITS[inp.regime][inp.wsTech];
+    const regime = inp.regime || (onOrAfter(date, 'WS_REGIME') ? 'post' : 'pre');
+    let avc = +inp.avc;
+    if (inp.conn && onOrAfter(date, 'A1') && avc > +inp.conn) { avc = +inp.conn; notes.push(`Available capacity capped at connectivity granted, ${avc} MW (Reg 3(1)(g), A1, BR-DV-05).`); }
+    const X = regime === 'post' ? +inp.X : 100;
+    denom = regime === 'post' ? (X / 100) * avc + ((100 - X) / 100) * S : avc;
+    const [p1, p2] = WS_LIMITS[regime][inp.wsTech];
     limits = [p1 / 100 * denom, p2 / 100 * denom];
     labels = [`VL1 ≤ ${p1}%`, `VL2 ${p1}–${p2}%`, `Beyond ${p2}%`];
     rates = dir === 'over' ? [{ pct: 100, rule: 'BR-WS-01' }, { pct: 90, rule: 'BR-WS-01' }, { pct: 0, rule: 'BR-WS-01' }]
@@ -630,13 +778,16 @@ function settle(inp) {
   } else if (type === 'buyer') {
     basis = 'NR';
     const c = inp.buyerCat;
-    if (c === 'regular') { limits = [Math.min(0.10 * S, 100), Math.min(0.15 * S, 200)]; labels = ['VL1', 'VL2', 'VL3']; }
-    if (c === 'small') { limits = [Math.min(0.20 * S, 40)]; labels = ['VL1', 'VL2']; }
+    if (c === 'regular') { limits = [Math.min(0.10 * S, 100), Math.min(0.15 * S, 200)]; labels = ['VL1 ≤ min(10% S, 100 MW)', 'VL2 to min(15% S, 200 MW)', 'VL3 beyond']; }
+    if (c === 'small') { limits = [Math.min(0.20 * S, 40)]; labels = ['VL1 ≤ min(20% S, 40 MW)', 'VL2 beyond']; }
     if (c === 'rerich') { limits = [200, 300]; labels = ['VL1 ≤ 200 MW', 'VL2 200–300 MW', 'VL3 > 300 MW']; }
     if (c === 'superrich') { limits = [250, 350]; labels = ['VL1 ≤ 250 MW', 'VL2 250–350 MW', 'VL3 > 350 MW']; }
-    if (c === 'regular') labels = ['VL1 ≤ min(10% S, 100 MW)', 'VL2 to min(15% S, 200 MW)', 'VL3 beyond'];
-    if (c === 'small') labels = ['VL1 ≤ min(20% S, 40 MW)', 'VL2 beyond'];
     rates = labels.map((_, k) => buyerRate(dir, k, f));
+  }
+  // Scheduled infirm power after the trial run: over-injection at f > 50.05 Hz is zero (A1 proviso, A2 8(8)(4)).
+  if (inp.infirm === 'scheduled' && dir === 'over' && f > 50.05 && onOrAfter(date, 'A1')) {
+    rates = rates.map(() => ({ pct: 0, rule: 'BR-IF-05' }));
+    notes.push('Scheduled infirm power, frequency above 50.05 Hz: over-injection is charged at zero (BR-IF-05).');
   }
   const vols = split(abs, limits);
   const slabs = vols.map((mw, k) => {
@@ -646,16 +797,17 @@ function settle(inp) {
   });
   const total = slabs.reduce((s, x) => s + x.amt, 0);
   const devPct = denom ? 100 * dev / denom : null;
-  return { dev, dir, devPct, denom, slabs, total: r2(total) + 0, basis };
+  return { dev, dir, devPct, denom, slabs, total: r2(total) + 0, basis, notes, pricedAs: type };
 }
 
-function lps(amount, issueDate, payDate) { // Reg 10(1): due in 10 days, 0.04%/day after
-  const due = new Date(issueDate); due.setDate(due.getDate() + 10);
+// Reg 10(1) as amended by A3: due in 10 days, or the NDASPA Detailed Procedure timeline; 0.04%/day after.
+function lps(amount, issueDate, payDate, dueDays = 10) {
+  const due = new Date(issueDate); due.setDate(due.getDate() + dueDays);
   const days = Math.max(0, Math.round((new Date(payDate) - due) / 86400000));
   return { due, days, surcharge: r2(amount * 0.0004 * days) };
 }
 
-if (typeof module !== 'undefined') module.exports = { settle, normalRate, lps, gsRate, buyerRate, split };
+if (typeof module !== 'undefined') module.exports = { settle, normalRate, lps, gsRate, buyerRate, split, wsParity, EFFECTIVE };
 
 
 const $ = id => document.getElementById(id);
@@ -715,8 +867,27 @@ const RULES = [
  ['BR-PY-02','10(2)','Letter of credit','An entity that paid late in the previous FY opens an LC for 110% of its average weekly liability within a fortnight of the FY start.'],
  ['BR-PY-03','10(3)','LC encashment','RLDC may encash the LC on default. The entity recoups it within 3 days.'],
 ];
-$('ruleTable').tBodies[0].innerHTML = RULES.map(r => `<tr><td><span class="tag">${r[0]}</span></td><td class="mono">${r[1]}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td></tr>`).join('');
-const rc = document.querySelector('[data-rule-count]'); if (rc) rc.textContent = RULES.length;
+/* Amendments: changed rules keep their ID; new rules are inserted after the rule they extend. */
+const AMEND_RULES = {
+  'BR-IF-01': ['8(8)(1)', 'Infirm power', 'Injection of infirm power is charged at zero, except as in BR-IF-02, BR-IF-03 and BR-IF-04.', 'A2, A3'],
+  'BR-PY-01': ['10(1)', 'Payment', 'Due within 10 days of the statement, or within the timeline in the national pool account\'s Detailed Procedure approved by CERC. Late payment surcharge is 0.04% per day of delay.', 'A3'],
+  'BR-PY-03': ['10(3)', 'LC encashment', 'RLDC may encash the LC if payment misses the 10-day or Procedure timeline. The entity recoups it within 3 days.', 'A3'],
+};
+const NEW_RULES = [
+  ['BR-DV-04', ['BR-DV-05', '3(1)(g)', 'WS seller', 'Available capacity is limited to the connectivity granted. From 23-12-2024.', 'A1']],
+  ['BR-NR-01', ['BR-RT-01', '3(1)(j)(iii)', 'WS or MSW seller selling to a third party via open access', 'Contract rate = weighted average IDAM area clearing price of all exchanges for the block.', 'A1']],
+  ['BR-RT-01', ['BR-RT-02', '3(1)(y)(iii)', 'General seller selling to a third party via open access', 'Reference rate = weighted average IDAM area clearing price of all exchanges for the block.', 'A1']],
+  ['BR-WS-04', ['BR-WS-05', '8(4A)', 'WS seller, new projects', 'Priced on the general-seller table if the tender or bid date is on or after 01-01-2027 (bidding route), or COD is on or after 01-01-2029 (other projects). In force from 31-08-2026.', 'A3']],
+  ['BR-ES-03', ['BR-ES-04', '8(5) Note', 'Pumped hydro ESS under Section 62', 'Deviation is priced at the energy charge rate under Reg 66(3) of the CERC Tariff Regulations 2024.', 'A3']],
+  ['BR-IF-01', ['BR-IF-02', '8(8)(2)', 'Thermal unit, first sync to trial run', 'Infirm injection is paid at NR for each block, capped at ₹2.86/kWh. From 01-07-2025.', 'A2']],
+  ['BR-IF-02', ['BR-IF-03', '8(8)(2A)', 'Standalone ESS, first sync to trial run', 'Infirm injection is paid at NR for each block, capped at ₹2.00/kWh. From 31-08-2026.', 'A3']],
+  ['BR-IF-03', ['BR-IF-04', '8(8)(3)', 'Scheduled infirm power after trial run', 'Deviation from the infirm schedule follows the general-seller or WS-seller rules.', 'A2']],
+  ['BR-IF-04', ['BR-IF-05', '8(8)(4)', 'Infirm power above 50.05 Hz', 'Over-injection of scheduled infirm power is zero (A1, from 23-12-2024). Since A2 this also covers all infirm injection before the trial run.', 'A1, A2, A3']],
+];
+RULES.forEach(r => { const a = AMEND_RULES[r[0]]; if (a) { r[1] = a[0]; r[2] = a[1]; r[3] = a[2]; r[4] = a[3]; r[5] = 'amended'; } });
+NEW_RULES.forEach(([after, r]) => { r[5] = 'new'; RULES.splice(RULES.findIndex(x => x[0] === after) + 1, 0, r); });
+$('ruleTable').tBodies[0].innerHTML = RULES.map(r => `<tr><td><span class="tag">${r[0]}</span></td><td class="mono">${r[1]}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${r[4] ? r[4].split(', ').map(a => `<span class="amd">${a}</span>`).join(' ') + `<br><span class="hint">${r[5]}</span>` : '<span class="hint">Principal</span>'}</td></tr>`).join('');
+document.querySelectorAll('[data-rule-count]').forEach(el => el.textContent = RULES.length);
 
 /* ---------- Clarification log ---------- */
 const GAPS = [
@@ -733,6 +904,15 @@ const GAPS = [
  ['G-11','8(7)','In VL3, over-drawal at f ≥ 50.10 Hz is payable at 50% NR, while VL1 and VL2 over-drawal at that frequency is zero.','Implement as written. It is probably a deliberate deterrent; confirm the intent.','low'],
  ['G-12','7, 3(y)','NR is in paise/kWh. RR and CR are in ₹/kWh. Exchange ACPs are published in ₹/MWh.','Convert everything to ₹/kWh internally. Keep the original units on the audit trail.','low'],
 ];
+GAPS.find(g => g[0] === 'G-02')[2] = 'The weighting X for the WS denominator from 01-04-2026 is left to a separate CERC order. None of the three amendments (latest 25-08-2026) sets it, so the engine cannot price WS sellers under the new regime without an assumption.';
+GAPS.push(
+ ['G-13','8(4A)','Parity says WS sellers\' "charges for deviation" are treated at par with general sellers. It does not say whether the Reg 6 deviation formula (AvC-based denominator) and the rate basis (CR or RR) also switch.','Apply the general-seller table in full: deviation % on schedule, limit min(10% S, 100 MW), frequency-linked, priced at the plant\'s contract rate.','high'],
+ ['G-14','8(4A)(a)','"Tendering or bid submission dates on or after 01-01-2027" names two dates that can fall either side of the cut-off.','Use the bid submission date. Store both dates and flag projects where they straddle 01-01-2027.','med'],
+ ['G-15','8(8)(2), (2A)','Thermal and ESS infirm power is "paid @ NR subject to a ceiling". The quantity (all infirm energy or only unscheduled energy) and the treatment when NR is below zero are not stated.','Pay min(NR, cap) on all metered infirm energy in each block. Floor the rate at zero.','med'],
+ ['G-16','10(1), 10(3)','Since A3, payment can be due "within such timeline as stipulated in the Detailed Procedure" for the national pool account. That procedure is not in these documents.','Make the due-day count configuration, default 10. Update it once NLDC\'s procedure is approved.','med'],
+ ['G-17','8(5) Note','Section 62 pumped hydro is priced at the energy charge rate. It is unclear whether ECR applies only to discharge or also to charging, where signs are inverted.','Use ECR as the rate base in both modes and keep the BR-ES-01 sign inversion.','med'],
+ ['G-18','3(1)(g)','AvC is capped at the connectivity granted. Phased connectivity and separate wind and solar connectivity for hybrids are not addressed.','Cap at the total connectivity in force on the block date. Store connectivity with effective dates.','low']
+);
 $('gapTable').tBodies[0].innerHTML = GAPS.map(g => `<tr><td class="mono">${g[0]}</td><td class="mono">${g[1]}</td><td>${g[2]}</td><td>${esc(g[3])}</td><td><span class="pill ${g[4]}">${{high:'High',med:'Medium',low:'Low'}[g[4]]}</span></td></tr>`).join('');
 
 /* ---------- Frequency strip ---------- */
@@ -752,39 +932,48 @@ function freqStrip(f, type) {
 
 /* ---------- Calculator ---------- */
 function readCalc() {
-  return { type: $('cType').value, S: +$('cS').value, A: +$('cA').value, f: Math.round(+$('cF').value * 100) / 100, rate: +$('cR').value,
-    wsTech: $('cTech').value, regime: $('cReg').value, avc: +$('cAvc').value, X: +$('cX').value, buyerCat: $('cCat').value };
+  const t = $('cType').value;
+  return { type: t, S: +$('cS').value, A: +$('cA').value, f: Math.round(+$('cF').value * 100) / 100, rate: +$('cR').value, date: $('cDate').value || '2026-11-08',
+    infirm: t === 'buyer' ? 'none' : $('cInf').value, plantKind: $('cKind').value, psp62: t === 'ess' && $('cPsp').checked,
+    wsTech: $('cTech').value, avc: +$('cAvc').value, conn: +$('cConn').value || 0, X: +$('cX').value, route: $('cRoute').value, keyDate: $('cKey').value, buyerCat: $('cCat').value };
 }
 const PRESETS = { gs: { S: 500, A: 440, f: 49.95, R: 3.00 }, ess: { S: 50, A: 56, f: 50.04, R: 4.20 }, ror: { S: 1200, A: 1000, f: 50.00, R: 4.00 }, msw: { S: 20, A: 25, f: 50.00, R: 7.00 }, ws: { S: 60, A: 50, f: 50.00, R: 2.50 }, buyer: { S: 1000, A: 1150, f: 49.95, R: 5.00 } };
 function syncCalcUI(applyPreset) {
-  const t = $('cType').value;
+  const t = $('cType').value, inf = $('cInf').value;
+  const infOk = ['gs', 'ess', 'ws'].includes(t);
+  $('infField').hidden = !infOk; if (!infOk) $('cInf').value = 'none';
   $('wsFields').hidden = t !== 'ws'; $('buyerFields').hidden = t !== 'buyer';
-  const buyer = t === 'buyer';
+  $('kindField').hidden = !(t === 'gs' && $('cInf').value === 'pretrial');
+  $('pspField').hidden = t !== 'ess';
+  $('lblKey').textContent = $('cRoute').value === 'bid' ? 'Tender / bid date' : 'COD';
+  const buyer = t === 'buyer', pre = $('cInf').value === 'pretrial';
   $('lblS').textContent = buyer ? 'Scheduled drawal MW' : t === 'ess' ? 'Scheduled discharge MW' : 'Scheduled MW';
-  $('lblA').textContent = buyer ? 'Actual drawal MW' : t === 'ess' ? 'Actual discharge MW' : 'Actual MW';
-  $('lblR').textContent = buyer ? 'Normal rate ₹/kWh' : (t === 'ws' || t === 'msw') ? 'Contract rate ₹/kWh' : 'Reference rate ₹/kWh';
-  $('calcHint').textContent = {
-    gs: 'Priced on frequency and on a volume limit of min(10% S, 100 MW).',
+  $('lblA').textContent = buyer ? 'Actual drawal MW' : pre ? 'Infirm injection MW' : t === 'ess' ? 'Actual discharge MW' : 'Actual MW';
+  $('lblR').textContent = buyer || pre ? 'Normal rate ₹/kWh' : (t === 'ess' && $('cPsp').checked) ? 'Energy charge rate ₹/kWh' : (t === 'ws' || t === 'msw') ? 'Contract rate ₹/kWh' : 'Reference rate ₹/kWh';
+  $('calcHint').textContent = pre ? 'Before the trial run completes, the plant is paid for infirm injection, not charged for deviation. The rate is NR with a cap, depending on plant type and block date (BR-IF-01 to 05).' : {
+    gs: 'Priced on frequency and on a volume limit of min(10% S, 100 MW). A third-party open access seller uses the weighted IDAM price as RR (BR-RT-02).',
     ess: 'Discharging uses the general-seller table. While charging, enter drawal: over-drawal counts as under-injection (BR-ES-01).',
     ror: 'Run-of-River hydro is not frequency-linked.',
     msw: 'MSW plants are not frequency-linked. The limit is 20% of schedule with no MW cap (see G-09).',
-    ws: 'X is not yet notified by CERC. 50% is an assumption you can change (see G-02).',
+    ws: 'The block date picks the denominator regime. X is not yet notified by CERC; 50% is an assumption (G-02). A bid date on or after 01-01-2027 switches the plant to the general-seller table (BR-WS-05).',
     buyer: 'NR comes from the Normal Rate box below (5.90 ₹/kWh in that example). Enter it here in ₹/kWh.' }[t];
   if (applyPreset) { const p = PRESETS[t]; $('cS').value = p.S; $('cA').value = p.A; $('cF').value = p.f.toFixed(2); $('cR').value = p.R.toFixed(2); }
   renderCalc();
 }
 function renderCalc() {
   const i = readCalc(); const r = settle(i);
-  const unitWord = i.type === 'buyer' ? (r.dir === 'over' ? 'over-drawal' : 'under-drawal') : (r.dir === 'over' ? 'over-injection' : 'under-injection');
+  const unitWord = i.infirm === 'pretrial' ? 'infirm injection' : i.type === 'buyer' ? (r.dir === 'over' ? 'over-drawal' : 'under-drawal') : (r.dir === 'over' ? 'over-injection' : 'under-injection');
   $('oDev').textContent = (r.dev > 0 ? '+' : '') + r.dev.toFixed(2) + ' MW';
   $('oPct').textContent = r.devPct == null || !isFinite(r.devPct) ? 'n/a' : (r.devPct > 0 ? '+' : '') + r.devPct.toFixed(2) + '%';
   $('oTot').innerHTML = `<span class="${sgnCls(r.total)}">${inr(r.total, 2)}</span>`;
-  $('freqStrip').innerHTML = freqStrip(i.f, i.type);
+  $('freqStrip').innerHTML = freqStrip(i.f, r.pricedAs || i.type);
   $('oSlabs').innerHTML = r.slabs.map(s => `<tr${s.mw ? '' : ' style="opacity:.45"'}><td>${esc(s.label)}</td><td class="r num">${s.mw.toFixed(2)}</td><td class="r num">${s.mwh.toFixed(3)}</td><td class="r num ${sgnCls(s.pct)}">${s.pct.toFixed(2)}% ${r.basis}</td><td class="r num">${s.unit.toFixed(4)}</td><td class="r num ${sgnCls(s.amt)}">${inr(s.amt, 2)}</td><td><span class="tag">${s.rule}</span></td></tr>`).join('');
-  $('oNote').textContent = `${Math.abs(r.dev).toFixed(2)} MW ${unitWord} over a 15-minute block = ${(Math.abs(r.dev) * 0.25).toFixed(3)} MWh.` + (i.type === 'ws' ? ` Denominator = ${r.denom.toFixed(2)} MW.` : '') + ' A positive amount is receivable by the entity; a negative amount is payable to the pool.';
+  const qty = i.infirm === 'pretrial' ? Math.max(0, i.A) : Math.abs(r.dev);
+  $('oNote').textContent = `${qty.toFixed(2)} MW ${unitWord} over a 15-minute block = ${(qty * 0.25).toFixed(3)} MWh.` + (i.type === 'ws' && r.pricedAs === 'ws' ? ` Denominator = ${r.denom.toFixed(2)} MW.` : '') + ' A positive amount is receivable by the entity; a negative amount is payable to the pool.';
+  $('oNotes').innerHTML = (r.notes || []).map(n => `<li>${esc(n)}</li>`).join('');
 }
-['cType'].forEach(id => $(id).addEventListener('change', () => syncCalcUI(true)));
-['cS', 'cA', 'cF', 'cR', 'cTech', 'cReg', 'cAvc', 'cX', 'cCat'].forEach(id => $(id).addEventListener('input', renderCalc));
+['cType', 'cInf', 'cRoute', 'cPsp'].forEach(id => $(id).addEventListener('change', () => syncCalcUI(id === 'cType')));
+['cS', 'cA', 'cF', 'cR', 'cDate', 'cTech', 'cAvc', 'cConn', 'cX', 'cKey', 'cKind', 'cCat'].forEach(id => $(id).addEventListener('input', renderCalc));
 $('calcForm').addEventListener('submit', e => e.preventDefault());
 
 /* ---------- NR & LPS ---------- */
@@ -793,12 +982,12 @@ function renderNR() {
   $('nOut').innerHTML = `A = ${n.A.toFixed(2)} · B = ${n.B.toFixed(2)} · C = ${n.C.toFixed(2)} paise/kWh<br><b>NR = ${n.nr.toFixed(2)} paise/kWh (₹${(n.nr / 100).toFixed(4)}/kWh)</b>, set by ${n.driver === 'C' ? 'component C, as high ancillary deployment pulls NR above market prices' : 'component ' + n.driver}.`;
 }
 function renderLPS() {
-  const amt = +$('lAmt').value; const l = lps(amt, $('lIss').value, $('lPay').value);
+  const amt = +$('lAmt').value; const l = lps(amt, $('lIss').value, $('lPay').value, +$('lDue').value || 10);
   if (isNaN(l.due)) { $('lOut').textContent = 'Enter both dates.'; return; }
-  $('lOut').innerHTML = `Due date: <b>${l.due.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</b> · Days late: <b>${l.days}</b><br>Surcharge: <b class="${l.surcharge ? 'neg' : ''}">${inr(l.surcharge, 2)}</b>${l.days ? ' · Late payment means the entity must open an LC next FY (BR-PY-02).' : ' · Paid on time.'}`;
+  $('lOut').innerHTML = `Due date: <b>${l.due.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</b> · Days late: <b>${l.days}</b><br>Surcharge: <b class="${l.surcharge ? 'neg' : ''}">${inr(l.surcharge, 2)}</b>${l.days ? ' · Late payment means the entity must open an LC next FY (BR-PY-02).' : ' · Paid on time.'}<br><span class="hint">10 days by default. Since A3 the national pool account's Detailed Procedure may set a different timeline (G-16).</span>`;
 }
 ['nA', 'nB', 'nC'].forEach(id => $(id).addEventListener('input', renderNR));
-['lAmt', 'lIss', 'lPay'].forEach(id => $(id).addEventListener('input', renderLPS));
+['lAmt', 'lIss', 'lPay', 'lDue'].forEach(id => $(id).addEventListener('input', renderLPS));
 ['nrForm', 'lpForm'].forEach(id => $(id).addEventListener('submit', e => e.preventDefault()));
 
 /* ---------- Test suite ---------- */
@@ -816,6 +1005,16 @@ const TESTS = [
  ['TC11','MSW, +5 MW, CR ₹7','Limit 4 MW at CR = 1 MWh × ₹7,000; 1 MW beyond at zero',{type:'msw',S:20,A:25,f:50,rate:7},7000],
  ['TC12','Normal rate: IDAM 450, RTM 420, ASC 900','C = (450 + 420 + 900) ÷ 3 = 590.00 paise, which beats A and B',{nr:[450,420,900]},590],
  ['TC13','LPS on ₹1,00,000, issued 03-Nov, paid 18-Nov','Due 13-Nov; 5 days × 0.04% × ₹1,00,000',{lps:[100000,'2026-11-03','2026-11-18']},200],
+ ['TC14','A2 · Thermal infirm before trial run, 01-08-2025, 100 MW, NR ₹3.40','NR capped at ₹2.86: 25 MWh × ₹2,860, receivable',{type:'gs',infirm:'pretrial',plantKind:'thermal',S:0,A:100,f:50.00,rate:3.40,date:'2025-08-01'},71500],
+ ['TC15','A2 · Same block at 50.07 Hz','Above 50.05 Hz infirm injection is zero',{type:'gs',infirm:'pretrial',plantKind:'thermal',S:0,A:100,f:50.07,rate:3.40,date:'2025-08-01'},0],
+ ['TC16','A2 boundary · Same block on 01-05-2025','Before 01-07-2025 thermal infirm power was zero',{type:'gs',infirm:'pretrial',plantKind:'thermal',S:0,A:100,f:50.00,rate:3.40,date:'2025-05-01'},0],
+ ['TC17','A3 · ESS infirm before trial run, 01-10-2026, 40 MW, NR ₹1.80','Below the ₹2.00 cap: 10 MWh × ₹1,800',{type:'ess',infirm:'pretrial',S:0,A:40,f:50.00,rate:1.80,date:'2026-10-01'},18000],
+ ['TC18','A3 boundary · Same ESS block on 01-07-2026','Before 31-08-2026 ESS infirm power was zero',{type:'ess',infirm:'pretrial',S:0,A:40,f:50.00,rate:1.80,date:'2026-07-01'},0],
+ ['TC19','A1 · Scheduled infirm, +30 MW at 50.12 Hz','Zero above 50.05 Hz. Without the amendment it would be −₹2,250 (10% RR)',{type:'gs',infirm:'scheduled',S:100,A:130,f:50.12,rate:3,date:'2026-11-08'},0],
+ ['TC20','A1 · WS AvC 120 MW, connectivity 100 MW','AvC capped at 100, so the denominator is 80 MW: same result as TC06',{type:'ws',S:60,A:50,f:50,rate:2.5,wsTech:'solar',avc:120,conn:100,X:50,date:'2026-11-08'},-7750],
+ ['TC21','A3 · WS bid 01-02-2027, −10 MW at 50.00 Hz','General-seller table: 6 MW at 100% CR = 1.5 MWh × ₹2,500; 4 MW beyond at 100% = 1 MWh × ₹2,500',{type:'ws',S:60,A:50,f:50.00,rate:2.5,wsTech:'solar',avc:100,X:50,route:'bid',keyDate:'2027-02-01',date:'2027-06-01'},-6250],
+ ['TC22','A3 boundary · WS bid 15-12-2026','Before 01-01-2027, so the WS table applies: as TC06',{type:'ws',S:60,A:50,f:50.00,rate:2.5,wsTech:'solar',avc:100,X:50,route:'bid',keyDate:'2026-12-15',date:'2027-06-01'},-7750],
+ ['TC23','A3 · LPS with a 15-day Procedure timeline, paid 25-Nov','Due 18-Nov; 7 days × 0.04% × ₹1,00,000',{lps:[100000,'2026-11-03','2026-11-25',15]},280],
 ];
 $('testBody').innerHTML = TESTS.map(t => {
   const got = t[3].nr ? normalRate(...t[3].nr).nr : t[3].lps ? lps(...t[3].lps).surcharge : settle(t[3]).total;
@@ -1014,6 +1213,73 @@ function renderNRBars() {
   $('nBars').innerHTML = rows.map(([k, d, v]) => `<div class="nrb${n.driver === k ? ' win' : ''}"><span>${k}</span><span class="bar" style="width:${Math.max(0, v) / mx * 100}%" title="${k} (${d}) = ${v.toFixed(2)} paise/kWh"></span><span class="val">${v.toFixed(2)} p</span></div>`).join('');
 }
 ['nA', 'nB', 'nC'].forEach(id => $(id).addEventListener('input', renderNRBars)); renderNRBars();
+
+
+/* ---------- Amendments ---------- */
+(function timeline() {
+  const ev = [
+    ['2024-08-21', 'Principal regulation', 'gazetted', 'an', 'done'],
+    ['2024-12-23', 'A1 in force', 'AvC, OA rates, infirm', 'bn', 'done'],
+    ['2025-07-01', 'A2 in force', 'thermal infirm', 'af', 'done'],
+    ['2026-04-01', 'WS regime switch', 'new denominator', 'bn', 'done'],
+    ['2026-08-31', 'A3 in force', 'parity, ESS, payment', 'an', 'done'],
+    ['2026-11-08', 'Today', '', 'bf', 'today'],
+    ['2027-01-01', 'Parity: bids', 'tender / bid date', 'af', 'future'],
+    ['2029-01-01', 'Parity: COD', 'other projects', 'bn', 'future'],
+  ];
+  const W = 1300, L = 30, R = 30, ax = 112, t0 = ms('2024-07-01'), t1 = ms('2029-04-01');
+  const x = d => L + (ms(d) - t0) / (t1 - t0) * (W - L - R);
+  const lane = { af: 30, an: 70, bn: 152, bf: 192 };
+  let s = `<svg viewBox="0 0 ${W} 222" role="img" aria-label="Timeline of DSM 2024 effective dates from August 2024 to January 2029" style="min-width:900px;width:100%;height:auto;display:block">`;
+  s += `<line x1="${L}" x2="${W - R}" y1="${ax}" y2="${ax}" style="stroke:var(--line);stroke-width:2"/>`;
+  s += `<line x1="${L}" x2="${x('2026-11-08')}" y1="${ax}" y2="${ax}" style="stroke:var(--accent);stroke-width:2"/>`;
+  ['2025', '2026', '2027', '2028', '2029'].forEach(y => { const px = x(y + '-01-01'); s += `<line x1="${px}" x2="${px}" y1="${ax - 4}" y2="${ax + 4}" style="stroke:var(--muted)"/><text x="${px + 4}" y="${ax - 8}" style="font-size:10px">${y}</text>`; });
+  ev.forEach(([d, t, sub, ln, st]) => {
+    const px = x(d), ly = lane[ln], up = ln[0] === 'a';
+    const anchor = px < L + 60 ? 'start' : px > W - R - 60 ? 'end' : 'middle';
+    s += `<line x1="${px}" x2="${px}" y1="${ax}" y2="${up ? ly + 8 : ly - 26}" style="stroke:var(--line)"/>`;
+    s += `<circle cx="${px}" cy="${ax}" r="${st === 'today' ? 7 : 6}" style="fill:${st === 'future' ? 'var(--surface)' : st === 'today' ? 'var(--ink)' : 'var(--accent)'};stroke:${st === 'today' ? 'var(--surface)' : 'var(--accent)'};stroke-width:2"/>`;
+    const dd = d.split('-').reverse().join('-');
+    s += `<text x="${px}" y="${up ? ly - 14 : ly - 12}" text-anchor="${anchor}" style="fill:var(--ink);font:600 12px var(--f-body)">${t}</text>`;
+    s += `<text x="${px}" y="${up ? ly : ly + 2}" text-anchor="${anchor}">${dd}${sub ? ' · ' + sub : ''}</text>`;
+  });
+  $('amdTimeline').innerHTML = s + '</svg>';
+})();
+
+(function infirmMatrix() {
+  const cols = ['Principal<br><span class="hint">to 22-12-2024</span>', 'A1<br><span class="hint">from 23-12-2024</span>', 'A2<br><span class="hint">from 01-07-2025</span>', 'A3<br><span class="hint">from 31-08-2026</span>'];
+  const Z = ['z', 'Zero'], T = ['p', 'Paid at NR, max ₹2.86/kWh'], E = ['p', 'Paid at NR, max ₹2.00/kWh'], S = ['s', 'Seller rules'], S10 = ['s', 'Seller rules (pays 10% RR at ≥ 50.10 Hz)'];
+  const rows = [
+    ['Thermal unit, first sync to trial run', [Z, Z, T, T]],
+    ['Standalone ESS, first sync to trial run', [Z, Z, Z, E]],
+    ['Other plants, first sync to trial run', [Z, Z, Z, Z]],
+    ['Any infirm injection above 50.05 Hz', [Z, Z, Z, Z]],
+    ['Scheduled infirm after trial run: over-injection above 50.05 Hz', [S10, Z, Z, Z]],
+    ['Scheduled infirm after trial run: any other deviation', [S, S, S, S]],
+  ];
+  $('infirmMatrix').innerHTML = `<thead><tr><th>Case</th>${cols.map(c => `<th>${c}</th>`).join('')}</tr></thead><tbody>` +
+    rows.map(([l, cs]) => `<tr><td>${l}</td>${cs.map((c, i) => `<td><span class="mx ${c[0]}${i && cs[i - 1][1] !== c[1] ? ' chg' : ''}">${c[1]}</span></td>`).join('')}</tr>`).join('') + '</tbody>';
+})();
+
+function renderParity() {
+  const route = $('pRoute').value, d = $('pDate').value;
+  $('pDateLbl').textContent = route === 'bid' ? 'Tender or bid submission date' : 'Commercial operation date (COD)';
+  if (!d) { $('pOut').textContent = 'Enter a date.'; return; }
+  const yes = wsParity(route, d, '2029-06-01');
+  const cut = route === 'bid' ? '01-01-2027' : '01-01-2029';
+  $('pOut').innerHTML = yes ? `<span class="pill med">General-seller table</span> The date is on or after ${cut}, so deviation is frequency-linked from the block it applies.`
+    : `<span class="pill low">WS table</span> The date is before ${cut}, so the volume-linked WS rules continue.`;
+}
+['pRoute', 'pDate'].forEach(id => $(id).addEventListener('input', renderParity)); $('parityForm').addEventListener('submit', e => e.preventDefault()); renderParity();
+
+(function parityChart() {
+  const base = { type: 'ws', S: 60, A: 50, rate: 2.5, wsTech: 'solar', avc: 100, X: 50, date: '2027-06-01' };
+  const energy = 10 * 0.25 * 1000 * 2.5; // ₹ at 100% CR
+  freqChart('vParity', [
+    { name: 'WS table', short: 'WS', fn: f => -settle({ ...base, f, route: 'bid', keyDate: '2026-12-01' }).total / energy * 100 },
+    { name: 'General-seller table (parity)', short: 'Parity', fn: f => -settle({ ...base, f, route: 'bid', keyDate: '2027-02-01' }).total / energy * 100 },
+  ]);
+})();
 
 /* ---------- boot ---------- */
 $('simCsv').value = sampleCSV();
