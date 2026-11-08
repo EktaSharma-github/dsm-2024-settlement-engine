@@ -108,6 +108,77 @@ svg text{fill:var(--muted);font:11px var(--f-mono)}
 svg text.fc-t{fill:var(--ink);font:500 13px var(--f-body)} svg text.fc-ref{fill:var(--accent);font:500 11px var(--f-mono)}
 svg text.fc-l{fill:var(--muted);font:italic 11px var(--f-body)}
 footer{padding-block:32px 48px;border-top:1px solid var(--line);color:var(--muted);font-size:.85rem;display:grid;gap:6px}
+
+/* ---- Rules, visually ---- */
+:root{--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;
+  --q1:#cde2fb;--q2:#9ec5f4;--q3:#6da7ec;--q4:#3987e5;--q5:#256abf;--q6:#184f95;--q-lo:#16202b;--q-hi:#ffffff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--s1:#3987e5;--s2:#d95926;--s3:#199e70;
+  --q1:#1c3350;--q2:#184f95;--q3:#256abf;--q4:#3987e5;--q5:#6da7ec;--q6:#9ec5f4;--q-lo:#e4eaf0;--q-hi:#0f151b}}
+:root[data-theme="dark"]{--s1:#3987e5;--s2:#d95926;--s3:#199e70;
+  --q1:#1c3350;--q2:#184f95;--q3:#256abf;--q4:#3987e5;--q5:#6da7ec;--q6:#9ec5f4;--q-lo:#e4eaf0;--q-hi:#0f151b}
+.sub-head{display:grid;gap:4px;margin-top:8px}
+.tree{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px}
+.lane{display:grid;gap:8px;align-content:start;min-width:0}
+.lane-h{font:600 .74rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.node{display:grid;gap:3px;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--bg)}
+.node .if{font-size:.84rem;color:var(--muted)}
+.node .then{font-weight:600;font-size:.9rem}
+.node .then::before{content:"→ ";color:var(--accent)}
+.node .tag{justify-self:start}
+.fchart{position:relative;min-width:0;overflow-x:auto}
+.fchart svg{width:100%;min-width:420px;height:auto;display:block;touch-action:pan-y}
+.fchart svg:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.vlegend{display:flex;flex-wrap:wrap;gap:4px 14px;font:500 .76rem var(--f-mono);color:var(--muted)}
+.vlegend i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:6px;border-radius:1px}
+.tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font:500 .76rem/1.5 var(--f-mono);color:var(--ink);box-shadow:0 4px 14px rgb(0 0 0 / .12);white-space:nowrap;z-index:2}
+.tip i{display:inline-block;width:10px;height:2px;vertical-align:middle;margin-right:6px}
+.tip b{display:block;margin-bottom:2px}
+details.tableview summary{cursor:pointer;color:var(--accent);font-weight:500;font-size:.88rem}
+details.tableview table{margin-top:10px}
+.slabs{display:grid;gap:10px;min-width:0}
+.srow{display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr);gap:10px;align-items:center}
+@media (max-width:520px){.srow{grid-template-columns:1fr;gap:4px}}
+.slabel{font-size:.82rem;line-height:1.3}
+.slabel small{display:block;color:var(--muted);font:400 .72rem var(--f-mono)}
+.strack{position:relative;display:flex;gap:2px;height:30px}
+.seg{display:flex;align-items:center;justify-content:center;font:600 .72rem var(--f-mono);border-radius:2px;min-width:0;overflow:hidden;white-space:nowrap}
+.seg:first-child{border-radius:4px 2px 2px 4px}.seg:last-child{border-radius:2px 4px 4px 2px}
+.seg.q0{background:transparent;border:1px dashed var(--line);color:var(--muted)}
+.seg.q1{background:var(--q1);color:var(--q-lo)}.seg.q2{background:var(--q2);color:var(--q-lo)}.seg.q3{background:var(--q3);color:var(--q-lo)}
+.seg.q4{background:var(--q4);color:var(--q-hi)}.seg.q5{background:var(--q5);color:var(--q-hi)}.seg.q6{background:var(--q6);color:var(--q-hi)}
+.saxis{position:relative;height:16px;margin-left:calc(min(150px, 100%) + 10px);font:400 .7rem var(--f-mono);color:var(--muted)}
+@media (max-width:520px){.saxis{margin-left:0}}
+.saxis span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.saxis span:first-child{transform:none}.saxis span:last-child{transform:translateX(-100%)}
+.smark{position:absolute;top:-6px;bottom:-6px;width:0;border-left:2px solid var(--ink)}
+.smark span{position:absolute;bottom:-22px;left:4px;font:600 .7rem var(--f-mono);color:var(--ink);white-space:nowrap}
+.smark.right span{left:auto;right:4px}
+.slabs.marked{gap:30px;padding-bottom:6px}
+.flip{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;align-items:center}
+.fl-h{font:600 .72rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.fl-a{padding:8px 10px;background:var(--bg);border:1px solid var(--line);border-radius:6px;font-size:.86rem}
+.fl-b{padding:8px 10px;border-radius:6px;font-weight:600;font-size:.86rem;border:1px solid currentColor}
+.fl-b::before{content:"→ "}
+.strip-wrap{display:grid;gap:10px}
+.strip{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:2px}
+.strip span{height:28px;display:flex;align-items:center;justify-content:center;font:600 .66rem var(--f-mono);border-radius:2px}
+.strip .p{background:var(--q3);color:var(--q-lo)}.strip .n{background:var(--sunk);color:var(--muted)}
+.strip .rev{outline:2px solid var(--ink);outline-offset:-2px}
+.strip-cap{font:500 .74rem var(--f-mono);color:var(--muted)}
+.pool{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center}
+@media (max-width:700px){.pool{grid-template-columns:1fr}}
+.pool-col{display:grid;gap:6px}
+.pc{padding:8px 10px;border-radius:6px;font-size:.86rem;border:1px solid var(--line);background:var(--bg)}
+.pc.in::before{content:"+ ";color:var(--rec);font-weight:700}.pc.out::before{content:"− ";color:var(--pay);font-weight:700}
+.pool-mid{display:flex;justify-content:center}
+.pool-box{display:block;text-align:center;padding:16px 18px;border:2px solid var(--accent);border-radius:8px;background:var(--accent-soft);font-weight:600;max-width:220px}
+.nrbars{display:grid;gap:6px}
+.nrb{display:grid;grid-template-columns:28px minmax(0,1fr) 92px;gap:8px;align-items:center;font:500 .78rem var(--f-mono)}
+.nrb .bar{height:14px;border-radius:2px 4px 4px 2px;background:var(--sunk)}
+.nrb.win .bar{background:var(--s1)}
+.nrb .val{text-align:right;color:var(--ink)}
+.nrb.win .val{font-weight:600}
+
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style>
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
@@ -116,7 +187,7 @@ footer{padding-block:32px 48px;border-top:1px solid var(--line);color:var(--mute
 
 <nav class="top" aria-label="Sections"><div class="wrap">
 <span class="brand">DSM&nbsp;2024</span>
-<a href="#context">Context</a><a href="#process">Process</a><a href="#rules">Business rules</a><a href="#calculator">Calculator</a><a href="#simulator">Day simulator</a><a href="#tests">Test suite</a><a href="#stories">User stories</a><a href="#gaps">Clarification log</a><a href="#delivery">Data &amp; delivery</a>
+<a href="#context">Context</a><a href="#process">Process</a><a href="#rules">Business rules</a><a href="#visual">Rules, visually</a><a href="#calculator">Calculator</a><a href="#simulator">Day simulator</a><a href="#tests">Test suite</a><a href="#stories">User stories</a><a href="#gaps">Clarification log</a><a href="#delivery">Data &amp; delivery</a>
 </div></nav>
 
 <div class="wrap">
@@ -170,8 +241,101 @@ footer{padding-block:32px 48px;border-top:1px solid var(--line);color:var(--mute
 
 <section id="rules">
   <div class="sec-head"><span class="eyebrow">03 · Business rules</span><h2>Rule catalogue, traced to clauses</h2>
-  <p>Each rule has an ID that the engine prints on every charge line. QA, client success and the regulator can then follow a rupee back to the clause that produced it. RR = reference charge rate, CR = contract rate, NR = normal rate, S = schedule, f = frequency.</p></div>
+  <p>Each rule has an ID that the engine prints on every charge line. The next section draws the same rules as charts. QA, client success and the regulator can then follow a rupee back to the clause that produced it. RR = reference charge rate, CR = contract rate, NR = normal rate, S = schedule, f = frequency.</p></div>
   <div class="scroll"><table id="ruleTable"><thead><tr><th>ID</th><th>Clause</th><th>Applies to</th><th>Rule</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section id="visual">
+  <div class="sec-head"><span class="eyebrow">03b · Business rules, visually</span><h2>See every rule at a glance</h2>
+  <p>These charts are drawn by the same engine functions that price the calculator, so the pictures and the numbers cannot drift apart. Hover or tap a chart to read exact values. The green shading marks the operating band, 49.90–50.05 Hz.</p></div>
+
+  <div class="panel"><h3>Which table prices my deviation? <span class="tag">Reg 8</span></h3>
+    <div class="tree">
+      <div class="lane"><span class="lane-h">Seller</span>
+        <div class="node"><span class="if">Wind, solar or hybrid?</span><span class="then">WS table · no frequency link</span><span class="tag">BR-WS-01–04</span></div>
+        <div class="node"><span class="if">Run-of-River hydro?</span><span class="then">RoR table · no frequency link</span><span class="tag">BR-RR-01–02</span></div>
+        <div class="node"><span class="if">Municipal solid waste?</span><span class="then">MSW table · contract rate</span><span class="tag">BR-MS-01–02</span></div>
+        <div class="node"><span class="if">Anything else</span><span class="then">General-seller table · frequency-linked</span><span class="tag">BR-GS-01–12</span></div>
+      </div>
+      <div class="lane"><span class="lane-h">Buyer</span>
+        <div class="node"><span class="if">State or discom drawing power</span><span class="then">Buyer table · priced on NR</span><span class="tag">BR-BY-01–08</span></div>
+        <div class="node"><span class="if">Which volume limits?</span><span class="then">Regular, up to 400 MW, RE-rich or super-rich</span><span class="tag">BR-BY-09</span></div>
+        <div class="node"><span class="if">State with net injection at the periphery</span><span class="then">Still priced as a buyer</span><span class="tag">BR-ST-01</span></div>
+      </div>
+      <div class="lane"><span class="lane-h">Storage</span>
+        <div class="node"><span class="if">Standalone ESS</span><span class="then">General-seller table, signs flipped while charging</span><span class="tag">BR-ES-01</span></div>
+        <div class="node"><span class="if">Pumped hydro charging, to 31-03-2026</span><span class="then">WS solar table</span><span class="tag">BR-ES-02</span></div>
+        <div class="node"><span class="if">ESS at a wind/solar plant</span><span class="then">Table follows whichever unit is injecting</span><span class="tag">BR-ES-03</span></div>
+      </div>
+      <div class="lane"><span class="lane-h">Special cases (override)</span>
+        <div class="node"><span class="if">Infirm power before COD</span><span class="then">Zero charge</span><span class="tag">BR-IF-01</span></div>
+        <div class="node"><span class="if">Start-up or auxiliary drawal</span><span class="then">RR or CR, else DAM price</span><span class="tag">BR-SU-01</span></div>
+        <div class="node"><span class="if">Forced outage</span><span class="then">RR for up to 8 blocks</span><span class="tag">BR-OT-01</span></div>
+        <div class="node"><span class="if">Sold on HP-DAM, under-injected</span><span class="then">RR = HP-DAM price</span><span class="tag">BR-HP-01</span></div>
+        <div class="node"><span class="if">Inter-regional or cross-border</span><span class="then">Normal rate</span><span class="tag">BR-IR-01 · CB-01</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-head"><h3>General seller: rate against frequency</h3><p class="hint">Thermal, gas, hydro with pondage and discharging ESS. "Within limit" is the first min(10% of schedule, 100 MW) of deviation; "beyond limit" is the rest.</p></div>
+  <div class="grid2">
+    <div class="panel"><h3>Over-injection <span class="hint">seller receives, % of RR</span></h3><div class="fchart" id="vGsOver"></div></div>
+    <div class="panel"><h3>Under-injection <span class="hint">seller pays, % of RR</span></h3><div class="fchart" id="vGsUnder"></div></div>
+  </div>
+  <p class="hint">Read it like this: a generator that falls short at 49.92 Hz, when the grid needs power most, pays up to 150% of RR inside the limit and 200% beyond it. Extra power at 50.10 Hz or above is worse than worthless: the seller pays 10% of RR for it.</p>
+
+  <div class="sub-head"><h3>Buyer: rate against frequency, by volume slab</h3><p class="hint">VL1, VL2 and VL3 are the volume slabs. Their MW sizes depend on the buyer category (chart further down).</p></div>
+  <div class="grid2">
+    <div class="panel"><h3>Under-drawal <span class="hint">buyer receives, % of NR</span></h3><div class="fchart" id="vByUnder"></div></div>
+    <div class="panel"><h3>Over-drawal <span class="hint">buyer pays, % of NR</span></h3><div class="fchart" id="vByOver"></div></div>
+  </div>
+  <details class="tableview"><summary>Show the four frequency charts as a table</summary><div class="scroll"><table id="vFreqTable"></table></div></details>
+
+  <div class="sub-head"><h3>Volume-linked sellers: rate by size of deviation</h3><p class="hint">No frequency link here. The rate depends only on how far the deviation goes, as a percentage of the denominator: available capacity or blended capacity for WS sellers, schedule for RoR and MSW. Darker means the seller pays more, or receives more for over-injection.</p></div>
+  <div class="grid2">
+    <div class="panel"><h3>Under-injection <span class="hint">seller pays</span></h3><div class="slabs" id="vSlabUnder"></div></div>
+    <div class="panel"><h3>Over-injection <span class="hint">seller receives</span></h3><div class="slabs" id="vSlabOver"></div></div>
+  </div>
+  <p class="hint">RoR slabs are also capped at 150 MW and 200 MW, whichever is lower. The MSW slab has no MW cap (gap G-09). Under-injection beyond the last WS slab costs 200% of CR, while over-injection beyond it earns nothing.</p>
+
+  <div class="grid2">
+    <div class="panel"><h3>Why 01-04-2026 matters for WS sellers <span class="tag">BR-DV-02 · DV-03</span></h3>
+      <p class="hint">The same block for a solar plant, 100 MW available, scheduled at 60 MW, generating 50 MW. Only the denominator and the slab sizes change.</p>
+      <div class="slabs marked" id="vRegime"></div>
+      <p class="hint">To 31-03-2026 the 10 MW shortfall is 10% of 100 MW, which stays inside VL1 at CR. From 01-04-2026, with X at 50%, the denominator is 80 MW, the shortfall is 12.5%, and part of it is charged at 200% of CR. The block's cost rises from ₹6,250 to ₹7,750.</p>
+    </div>
+    <div class="panel"><h3>Buyer volume limits by category <span class="tag">BR-BY-09</span></h3>
+      <p class="hint">MW of deviation in each slab. A regular buyer's limits scale with its schedule; this example uses 1,500 MW. The small buyer uses 300 MW.</p>
+      <div class="slabs" id="vBuyerVL"></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel"><h3>Storage: charging flips the signs <span class="tag">BR-ES-01</span></h3>
+      <div class="flip">
+        <span class="fl-h">While charging, the ESS…</span><span class="fl-h">…is priced as</span>
+        <span class="fl-a">draws more than scheduled</span><span class="fl-b neg">under-injection: pays</span>
+        <span class="fl-a">draws less than scheduled</span><span class="fl-b pos">over-injection: receives</span>
+        <span class="fl-h">While discharging, the ESS…</span><span class="fl-h"></span>
+        <span class="fl-a">injects more than scheduled</span><span class="fl-b pos">over-injection: receives</span>
+        <span class="fl-a">injects less than scheduled</span><span class="fl-b neg">under-injection: pays</span>
+      </div>
+      <p class="hint">Both modes use the general-seller frequency table above. Each unit needs its own Special Energy Meter.</p>
+    </div>
+    <div class="panel"><h3>Forced outage: 8 blocks of protection <span class="tag">BR-OT-01</span></h3>
+      <div class="strip-wrap" id="vOutage"></div>
+      <p class="hint">After an outage, deviation is charged at RR, not at the 150–200% low-frequency penalty. The protection ends after 8 blocks (2 hours) or as soon as the schedule is revised, whichever comes first.</p>
+    </div>
+  </div>
+
+  <div class="panel"><h3>Money flow: where deviation charges go <span class="tag">BR-AC-02</span></h3>
+    <div class="pool">
+      <div class="pool-col"><span class="lane-h">Pool receives</span><span class="pc in">Deviation charges paid by entities</span><span class="pc in">Late payment surcharge (0.04% per day)</span><span class="pc in">SRAS-Down and TRAS-Down payments</span></div>
+      <div class="pool-mid"><span class="pool-box">Deviation and Ancillary Service Pool Account<br><span class="hint">run by each RLDC</span></span></div>
+      <div class="pool-col"><span class="lane-h">Pool pays</span><span class="pc out">Sellers for over-injection</span><span class="pc out">Buyers for under-drawal</span><span class="pc out">SRAS-Up and TRAS-Up costs</span></div>
+    </div>
+    <p class="hint">If a region's pool runs short, it first uses other regions' surplus. Any balance is recovered from drawee DICs: to 31-03-2026 split 50% by drawal and 50% by GNA, and from 01-04-2026 by each DIC's shortfall of reserves.</p>
+  </div>
 </section>
 
 <section id="calculator">
@@ -225,6 +389,7 @@ footer{padding-block:32px 48px;border-top:1px solid var(--line);color:var(--mute
       </div>
       <div class="field"><label for="nC">Ancillary service charge (paise/kWh)</label><input id="nC" type="number" step="0.01" value="900"></div>
       <p id="nOut" class="num"></p>
+      <div class="nrbars" id="nBars" aria-label="Normal rate components"></div>
     </form>
     <form class="panel" id="lpForm" autocomplete="off"><h3>Late payment surcharge (Reg 10) <span class="tag">BR-PY-01</span></h3>
       <div class="field"><label for="lAmt">Statement amount payable ₹</label><input id="lAmt" type="number" step="1" value="1250000"></div>
@@ -735,6 +900,120 @@ function simChart(res, avc) {
 }
 $('simRun').addEventListener('click', runSim);
 $('simReset').addEventListener('click', () => { $('simCsv').value = sampleCSV(); runSim(); });
+
+
+/* ---------- Rules, visually ---------- */
+const FX = []; for (let i = 0; i <= 40; i++) FX.push(Math.round((49.80 + i * 0.01) * 100) / 100);
+const SER = ['var(--s1)', 'var(--s2)', 'var(--s3)'];
+const fmtPct = v => (Object.is(v, -0) ? 0 : +v.toFixed(2)) + '%';
+
+function freqChart(id, series) {
+  const host = $(id); const W = 520, H = 270, L = 46, R = 84, T = 22, B = 34, yMin = -25, yMax = 210;
+  const x = f => L + (f - 49.80) / 0.40 * (W - L - R);
+  const y = v => T + (yMax - v) / (yMax - yMin) * (H - T - B);
+  const data = series.map(s => FX.map(s.fn));
+  let s = `<svg viewBox="0 0 ${W} ${H}" tabindex="0" role="img" aria-label="${series.map(z => z.name).join(', ')} rate by frequency. Use left and right arrow keys to step through frequencies.">`;
+  s += `<rect x="${x(49.90)}" y="${T}" width="${x(50.05) - x(49.90)}" height="${H - T - B}" style="fill:var(--band)"/>`;
+  s += `<text x="${(x(49.90) + x(50.05)) / 2}" y="${T - 7}" text-anchor="middle">f band</text>`;
+  [0, 50, 100, 150, 200].forEach(v => { s += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" style="stroke:var(--line);stroke-width:${v === 0 ? 1.2 : .6}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v}%</text>`; });
+  s += `<text x="${L - 6}" y="${y(-12) + 4}" text-anchor="end" style="font-size:9px">pays</text>`;
+  [49.80, 49.90, 50.00, 50.05, 50.10, 50.20].forEach(f => { s += `<line x1="${x(f)}" x2="${x(f)}" y1="${H - B}" y2="${H - B + 4}" style="stroke:var(--muted)"/><text x="${x(f)}" y="${H - B + 16}" text-anchor="middle">${f.toFixed(2)}</text>`; });
+  s += `<text x="${(L + W - R) / 2}" y="${H - 2}" text-anchor="middle">Frequency (Hz)</text>`;
+  const path = d => d.map((v, i) => i ? `H${x(FX[i]).toFixed(1)}V${y(v).toFixed(1)}` : `M${x(FX[0]).toFixed(1)},${y(v).toFixed(1)}`).join('');
+  data.forEach((d, k) => { const p = path(d); s += `<path d="${p}" style="fill:none;stroke:var(--surface);stroke-width:5;stroke-linejoin:round"/><path d="${p}" style="fill:none;stroke:${SER[k]};stroke-width:2;stroke-linejoin:round"/>`; });
+  // direct labels at the right end, nudged apart
+  const ends = data.map((d, k) => ({ k, y: y(d[d.length - 1]) })).sort((a, b) => a.y - b.y);
+  for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 13) ends[i].y = ends[i - 1].y + 13;
+  ends.forEach(e => { s += `<line x1="${W - R + 2}" x2="${W - R + 10}" y1="${e.y}" y2="${e.y}" style="stroke:${SER[e.k]};stroke-width:2"/><text x="${W - R + 13}" y="${e.y + 4}" style="fill:var(--ink)">${series[e.k].short}</text>`; });
+  s += `<g class="xh" style="display:none"><line y1="${T}" y2="${H - B}" style="stroke:var(--ink);stroke-width:1;stroke-dasharray:3 3"/>${data.map((_, k) => `<circle r="4.5" style="fill:${SER[k]};stroke:var(--surface);stroke-width:2"/>`).join('')}</g>`;
+  s += `<rect class="hit" x="${L}" y="${T}" width="${W - L - R}" height="${H - T - B}" style="fill:transparent"/></svg>`;
+  host.innerHTML = `<div class="vlegend">${series.map((z, k) => `<span><i style="background:${SER[k]}"></i>${z.name}</span>`).join('')}</div>` + s + '<div class="tip" hidden></div>';
+  const svg = host.querySelector('svg'), xh = svg.querySelector('.xh'), tip = host.querySelector('.tip');
+  let cur = FX.indexOf(50.00);
+  function show(i) {
+    cur = Math.max(0, Math.min(FX.length - 1, i)); const f = FX[cur]; const px = x(f);
+    xh.style.display = ''; xh.querySelector('line').setAttribute('x1', px); xh.querySelector('line').setAttribute('x2', px);
+    xh.querySelectorAll('circle').forEach((c, k) => { c.setAttribute('cx', px); c.setAttribute('cy', y(data[k][cur])); });
+    tip.innerHTML = `<b>${f.toFixed(2)} Hz</b>` + series.map((z, k) => `<div><i style="background:${SER[k]}"></i>${z.short}: ${fmtPct(data[k][cur])}${data[k][cur] < 0 ? ' (pays)' : ''}</div>`).join('');
+    tip.hidden = false;
+    const r = svg.getBoundingClientRect(), hr = host.getBoundingClientRect(), sc = r.width / W;
+    let left = r.left - hr.left + host.scrollLeft + px * sc + 12; if (left + tip.offsetWidth > host.scrollWidth) left -= tip.offsetWidth + 24;
+    tip.style.left = left + 'px'; tip.style.top = (r.top - hr.top + 30) + 'px';
+  }
+  const hide = () => { xh.style.display = 'none'; tip.hidden = true; };
+  svg.addEventListener('pointermove', e => { const r = svg.getBoundingClientRect(); const vx = (e.clientX - r.left) / r.width * W; show(Math.round((vx - L) / (W - L - R) * 40)); });
+  svg.addEventListener('pointerleave', hide); svg.addEventListener('blur', hide);
+  svg.addEventListener('focus', () => show(cur));
+  svg.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); show(cur + (e.key === 'ArrowRight' ? 1 : -1)); } if (e.key === 'Escape') hide(); });
+  return { series, data };
+}
+
+const gsOverSeries = [
+  { name: 'Within limit', short: 'Within', fn: f => gsRate('over', 0, f).pct },
+  { name: 'Beyond limit', short: 'Beyond', fn: f => gsRate('over', 1, f).pct }];
+const gsUnderSeries = [
+  { name: 'Within limit', short: 'Within', fn: f => -gsRate('under', 0, f).pct },
+  { name: 'Beyond limit', short: 'Beyond', fn: f => -gsRate('under', 1, f).pct }];
+const byUnderSeries = [0, 1, 2].map(k => ({ name: 'VL' + (k + 1), short: 'VL' + (k + 1), fn: f => buyerRate('under', k, f).pct }));
+const byOverSeries = [0, 1, 2].map(k => ({ name: 'VL' + (k + 1), short: 'VL' + (k + 1), fn: f => -buyerRate('over', k, f).pct }));
+freqChart('vGsOver', gsOverSeries); freqChart('vGsUnder', gsUnderSeries);
+freqChart('vByUnder', byUnderSeries); freqChart('vByOver', byOverSeries);
+
+(function freqTable() {
+  const fs = [49.85, 49.90, 49.93, 49.97, 50.00, 50.02, 50.03, 50.04, 50.05, 50.07, 50.10, 50.15];
+  const cols = [['Gen. seller over, within', gsOverSeries[0]], ['Gen. seller over, beyond', gsOverSeries[1]], ['Gen. seller under, within', gsUnderSeries[0]], ['Gen. seller under, beyond', gsUnderSeries[1]],
+    ...byUnderSeries.map(s => ['Buyer under ' + s.name, s]), ...byOverSeries.map(s => ['Buyer over ' + s.name, s])];
+  $('vFreqTable').innerHTML = `<thead><tr><th>Hz</th>${cols.map(c => `<th class="r">${c[0]}</th>`).join('')}</tr></thead><tbody>` +
+    fs.map(f => `<tr><td class="mono">${f.toFixed(2)}</td>${cols.map(c => { const v = c[1].fn(f); return `<td class="r num${v < 0 ? ' neg' : ''}">${fmtPct(v)}</td>`; }).join('')}</tr>`).join('') +
+    '</tbody><caption class="hint" style="caption-side:bottom;text-align:left;padding-top:8px">Seller columns are % of RR; buyer columns are % of NR. Negative means the entity pays when it would normally receive.</caption>';
+})();
+
+/* slab bars */
+function qClass(v) { const a = Math.abs(v); return a === 0 ? 'q0' : a < 95 ? 'q2' : a <= 100 ? 'q3' : a <= 105 ? 'q4' : a <= 110 ? 'q5' : 'q6'; }
+function slabBars(id, rows, max, unit, ticks) {
+  const html = rows.map(r => {
+    let prev = 0; const segs = r.segs.map(sg => { const to = Math.min(sg.to, max); const w = (to - prev) / max * 100; const from = prev; prev = to;
+      return `<span class="seg ${sg.cls || qClass(sg.val)}" style="flex:0 0 calc(${w}% - 2px)" title="${from}–${sg.to >= max ? max + '+' : to}${unit}: ${sg.text}">${sg.text}</span>`; }).join('');
+    const mark = r.mark != null ? `<span class="smark${r.mark / max > .6 ? ' right' : ''}" style="left:${r.mark / max * 100}%"><span>${r.markLabel}</span></span>` : '';
+    return `<div class="srow"><span class="slabel">${r.label}${r.sub ? `<small>${r.sub}</small>` : ''}</span><span class="strack">${segs}${mark}</span></div>`;
+  }).join('');
+  $(id).innerHTML = html + `<div class="saxis">${ticks.map(t => `<span style="left:${t / max * 100}%">${t}${unit}</span>`).join('')}</div>`;
+}
+const WSROWS = [['Solar / hybrid', 'to 31-03-2026', 10, 15], ['Solar / hybrid', 'from 01-04-2026', 5, 10], ['Wind', 'to 31-03-2026', 15, 20], ['Wind', 'from 01-04-2026', 10, 15]];
+slabBars('vSlabUnder', [
+  ...WSROWS.map(([l, s, a, b]) => ({ label: l, sub: s, segs: [{ to: a, val: 100, text: 'CR' }, { to: b, val: 110, text: '110%' }, { to: 99, val: 200, text: '200%' }] })),
+  { label: 'Run-of-River', sub: '% of schedule, RR', segs: [{ to: 15, val: 100, text: 'RR' }, { to: 20, val: 105, text: '105%' }, { to: 99, val: 110, text: '110%' }] },
+  { label: 'MSW', sub: '% of schedule, CR', segs: [{ to: 20, val: 100, text: 'CR' }, { to: 99, val: 110, text: '110%' }] },
+], 30, '%', [0, 5, 10, 15, 20, 25, 30]);
+slabBars('vSlabOver', [
+  ...WSROWS.map(([l, s, a, b]) => ({ label: l, sub: s, segs: [{ to: a, val: 100, text: 'CR' }, { to: b, val: 90, text: '90%' }, { to: 99, val: 0, text: 'zero' }] })),
+  { label: 'Run-of-River', sub: '% of schedule, RR', segs: [{ to: 15, val: 100, text: 'RR' }, { to: 99, val: 0, text: 'zero' }] },
+  { label: 'MSW', sub: '% of schedule, CR', segs: [{ to: 20, val: 100, text: 'CR' }, { to: 99, val: 0, text: 'zero' }] },
+], 30, '%', [0, 5, 10, 15, 20, 25, 30]);
+slabBars('vRegime', [
+  { label: 'To 31-03-2026', sub: '÷ AvC 100 MW', segs: [{ to: 10, val: 100, text: 'CR' }, { to: 15, val: 110, text: '110%' }, { to: 99, val: 200, text: '200%' }], mark: 10, markLabel: '10 MW = 10%' },
+  { label: 'From 01-04-2026', sub: '÷ 80 MW (X = 50%)', segs: [{ to: 5, val: 100, text: 'CR' }, { to: 10, val: 110, text: '110%' }, { to: 99, val: 200, text: '200%' }], mark: 12.5, markLabel: '10 MW = 12.5%' },
+], 20, '%', [0, 5, 10, 15, 20]);
+slabBars('vBuyerVL', [
+  { label: 'Regular', sub: 'schedule 1,500 MW', segs: [{ to: 100, cls: 'q2', text: 'VL1' }, { to: 200, cls: 'q4', text: 'VL2' }, { to: 999, cls: 'q6', text: 'VL3' }] },
+  { label: 'Up to 400 MW', sub: 'schedule 300 MW', segs: [{ to: 40, cls: 'q2', text: 'VL1' }, { to: 999, cls: 'q4', text: 'VL2' }] },
+  { label: 'RE-rich state', sub: '1–5 GW wind + solar', segs: [{ to: 200, cls: 'q2', text: 'VL1' }, { to: 300, cls: 'q4', text: 'VL2' }, { to: 999, cls: 'q6', text: 'VL3' }] },
+  { label: 'RE super-rich', sub: '≥ 5 GW wind + solar', segs: [{ to: 250, cls: 'q2', text: 'VL1' }, { to: 350, cls: 'q4', text: 'VL2' }, { to: 999, cls: 'q6', text: 'VL3' }] },
+], 450, ' MW', [0, 100, 200, 300, 400]);
+
+/* outage strip */
+(function outage() {
+  const strip = (revAt) => { let h = ''; for (let b = 1; b <= 12; b++) { const prot = b <= 8 && (revAt == null || b < revAt); h += `<span class="${prot ? 'p' : 'n'}${revAt === b ? ' rev' : ''}">${prot ? 'RR' : 'Reg 8'}</span>`; } return `<div class="strip">${h}</div>`; };
+  $('vOutage').innerHTML = `<span class="strip-cap">Schedule never revised: protection runs 8 blocks</span>${strip(null)}<span class="strip-cap">Schedule revised at block 5 (outlined): protection stops there</span>${strip(5)}<span class="strip-cap">Blocks 1 to 12 after the outage · 15 minutes each</span>`;
+})();
+
+/* NR bars (drawn inside the Normal Rate panel) */
+function renderNRBars() {
+  const n = normalRate(+$('nA').value, +$('nB').value, +$('nC').value); const mx = Math.max(n.A, n.B, n.C, 1);
+  const rows = [['A', 'IDAM', n.A], ['B', 'RTM', n.B], ['C', '⅓ each', n.C]];
+  $('nBars').innerHTML = rows.map(([k, d, v]) => `<div class="nrb${n.driver === k ? ' win' : ''}"><span>${k}</span><span class="bar" style="width:${Math.max(0, v) / mx * 100}%" title="${k} (${d}) = ${v.toFixed(2)} paise/kWh"></span><span class="val">${v.toFixed(2)} p</span></div>`).join('');
+}
+['nA', 'nB', 'nC'].forEach(id => $(id).addEventListener('input', renderNRBars)); renderNRBars();
 
 /* ---------- boot ---------- */
 $('simCsv').value = sampleCSV();
